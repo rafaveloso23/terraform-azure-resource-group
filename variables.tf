@@ -5,5 +5,13 @@ variable "resource_group_name" {
 
 variable "location" {
   type    = string
-  default = "East US" 
+  default = "East US"
+}
+
+variable "tags" {
+  type = map(string)
+  default = {
+    environment = "dev"
+    costcenter  = "it"
+  }
 }
