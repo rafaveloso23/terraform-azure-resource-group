@@ -43,6 +43,12 @@ jobs:
           terraform_version: 1.6.0
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
+      - name: Set Azure Environment Variables
+        run: |
+          export ARM_SUBSCRIPTION_ID=${{ secrets.AZURE_SUBSCRIPTION_ID_DEV }}
+          export ARM_CLIENT_ID=${{ secrets.AZURE_CLIENT_ID_DEV }}
+          export ARM_TENANT_ID=${{ secrets.AZURE_TENANT_ID }}
+
       - name: Ensure Provider Block Exists
         run: |
           cat <<EOF > provider.tf
@@ -51,7 +57,6 @@ jobs:
           }
           EOF
         
-
       - name: Initialize Terraform
         run: terraform init
 
