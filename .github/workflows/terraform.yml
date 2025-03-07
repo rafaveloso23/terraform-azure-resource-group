@@ -17,7 +17,6 @@ jobs:
     env:
       TF_WORKSPACE: ${{ secrets.TF_WORKSPACE_DEV }}
 
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -41,24 +40,27 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
-          terraform_version: 1.6.0  # Specify Terraform version
+          terraform_version: 1.6.0
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
-      - name: Terraform Init
-        run: |
-          terraform init
+      - name: Initialize Terraform
+        run: terraform init
+
+      - name: Select/Create Terraform Workspace
+        run: terraform workspace select $TF_WORKSPACE || terraform workspace new $TF_WORKSPACE
 
       - name: Terraform Format Check
-        run: |
-          terraform fmt -check
+        run: terraform fmt -check -diff
 
       - name: Terraform Validate
-        run: |
-          terraform validate
+        run: terraform validate
 
       - name: Terraform Plan
-        run: |
-          terraform plan
+        run: terraform plan -out=tfplan
 
       - name: Generate GitHub Annotations (Warnings)
-        run: echo "::warning file=terraform.tf,line=1::Example annotation warning"
+        run: |
+          terraform plan -no-color | tee plan_output.txt
+          grep -E "Warning:" plan_output.txt | while read -r line; do
+            echo "::warning file=terraform.tf::${line}"
+          done
