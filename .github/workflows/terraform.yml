@@ -45,7 +45,12 @@ jobs:
 
       - name: Ensure Provider Block Exists
         run: |
-          echo 'provider "azurerm" { features {} }' > provider.tf
+          cat <<EOF > provider.tf
+          provider "azurerm" {
+            features {}
+          }
+          EOF
+        
 
       - name: Initialize Terraform
         run: terraform init
