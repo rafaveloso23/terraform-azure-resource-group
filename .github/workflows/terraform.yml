@@ -47,7 +47,7 @@ jobs:
       - name: Terraform Init
         run: |
           cd $PATH_TO_MODULE
-          terraform init -backend=false -var-file="terraform.tfvars"
+          terraform init
 
       - name: Terraform Format Check
         run: |
