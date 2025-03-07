@@ -46,9 +46,6 @@ jobs:
       - name: Initialize Terraform
         run: terraform init
 
-      - name: Select/Create Terraform Workspace
-        run: terraform workspace select $TF_WORKSPACE || terraform workspace new $TF_WORKSPACE
-
       - name: Terraform Format Check
         run: terraform fmt -check -diff
 
