@@ -1,0 +1,63 @@
+name: Terraform CI Workflow
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  id-token: write  # Required for OIDC authentication
+
+jobs:
+  terraform-dev:
+    name: 'Terraform Validation (Development)'
+    runs-on: ubuntu-latest
+    environment: development
+    env:
+      TF_WORKSPACE: ${{ secrets.TF_WORKSPACE_DEV }}
+      PATH_TO_MODULE: contoso-01
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Configure Git Credentials
+        run: |
+          git config --global url."https://${{ secrets.REPO_TOKEN }}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+
+      - name: Install Azure CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y azure-cli
+
+      - name: Azure CLI Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID_DEV }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID_DEV }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.6.0  # Specify Terraform version
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+      - name: Terraform Init
+        run: |
+          cd $PATH_TO_MODULE
+          terraform init -backend=false -var-file="terraform.tfvars"
+
+      - name: Terraform Format Check
+        run: |
+          cd $PATH_TO_MODULE
+          terraform fmt -check
+
+      - name: Terraform Validate
+        run: |
+          cd $PATH_TO_MODULE
+          terraform validate
+
+      - name: Generate GitHub Annotations (Warnings)
+        run: echo "::warning file=terraform.tf,line=1::Example annotation warning"
