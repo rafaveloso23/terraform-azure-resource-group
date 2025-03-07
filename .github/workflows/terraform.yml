@@ -16,7 +16,7 @@ jobs:
     environment: development
     env:
       TF_WORKSPACE: ${{ secrets.TF_WORKSPACE_DEV }}
-      PATH_TO_MODULE: contoso-01
+      
 
     steps:
       - name: Checkout Repository
