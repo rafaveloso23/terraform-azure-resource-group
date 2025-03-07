@@ -16,7 +16,6 @@ jobs:
     environment: development
     env:
       TF_WORKSPACE: ${{ secrets.TF_WORKSPACE_DEV }}
-      PATH_TO_MODULE: contoso-01
 
     steps:
       - name: Checkout Repository
@@ -41,23 +40,39 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
-          terraform_version: 1.6.0  # Specify Terraform version
+          terraform_version: 1.6.0
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
-      - name: Terraform Init
+      - name: Set Azure Environment Variables
         run: |
-          cd $PATH_TO_MODULE
-          terraform init
+          export ARM_SUBSCRIPTION_ID=${{ secrets.AZURE_SUBSCRIPTION_ID_DEV }}
+          export ARM_CLIENT_ID=${{ secrets.AZURE_CLIENT_ID_DEV }}
+          export ARM_TENANT_ID=${{ secrets.AZURE_TENANT_ID }}
+
+      - name: Ensure Provider Block Exists
+        run: |
+          cat <<EOF > provider.tf
+          provider "azurerm" {
+            subscription_id = "${{ secrets.AZURE_SUBSCRIPTION_ID_DEV }}"
+            features {}
+          }
+          EOF
+        
+      - name: Initialize Terraform
+        run: terraform init
 
       - name: Terraform Format Check
-        run: |
-          cd $PATH_TO_MODULE
-          terraform fmt -check
+        run: terraform fmt -check -diff
 
       - name: Terraform Validate
-        run: |
-          cd $PATH_TO_MODULE
-          terraform validate
+        run: terraform validate
+
+      - name: Terraform Plan
+        run: terraform plan -out=tfplan
 
       - name: Generate GitHub Annotations (Warnings)
-        run: echo "::warning file=terraform.tf,line=1::Example annotation warning"
+        run: |
+          terraform plan -no-color | tee plan_output.txt
+          grep -E "Warning:" plan_output.txt | while read -r line; do
+            echo "::warning file=terraform.tf::${line}"
+          done
