@@ -16,7 +16,7 @@ jobs:
     environment: development
     env:
       TF_WORKSPACE: ${{ secrets.TF_WORKSPACE_DEV }}
-      
+
 
     steps:
       - name: Checkout Repository
@@ -58,6 +58,11 @@ jobs:
         run: |
           cd $PATH_TO_MODULE
           terraform validate
+
+      - name: Terraform Plan
+        run: |
+          cd $PATH_TO_MODULE
+          terraform plan
 
       - name: Generate GitHub Annotations (Warnings)
         run: echo "::warning file=terraform.tf,line=1::Example annotation warning"
