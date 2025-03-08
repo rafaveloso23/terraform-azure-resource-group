@@ -84,5 +84,10 @@ jobs:
         env:
           WORKSPACE_NAME: ${{ needs.get-repo-name.outputs.sanitized_repo_name }}
         run: |
-          echo "This is the access to your workspace VCS, and start plan to test your code:"
+          echo "The workspace for your repository has been successfully created."
+          echo "You can now access the workspace VCS and initiate the plan to test your infrastructure code."
+          echo ""
+          echo "Workspace Access URL:"
           echo "https://app.terraform.io/app/veloso/workspaces/$WORKSPACE_NAME"
+          echo ""
+          echo "Please proceed with the necessary actions to validate your changes and trigger the execution."
