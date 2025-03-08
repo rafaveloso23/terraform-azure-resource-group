@@ -13,7 +13,10 @@ jobs:
     outputs:
       merged: ${{ steps.check_merge.outputs.merged }}
     steps:
-      - name: Get PR Details
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Get PR Merge Status
         id: check_merge
         run: |
           PR_MERGED_AT=$(gh pr view ${{ github.event.pull_request.number }} --json mergedAt -q .mergedAt || echo "")
