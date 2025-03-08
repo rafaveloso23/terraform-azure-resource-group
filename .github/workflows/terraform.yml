@@ -149,9 +149,9 @@ jobs:
                 "data": {
                   "attributes": {
                     "vcs-repo": {
-                      "identifier": "rafaveloso23/${{ env.WORKSPACE_NAME }}",
+                      "identifier": "rafaveloso23/'"$WORKSPACE_NAME"'", 
                       "oauth-token-id": "${{ env.OAUTH_TOKEN_ID }}",
-                      "display_identifier": "rafaveloso23/${{ env.WORKSPACE_NAME }}",
+                      "display_identifier": "rafaveloso23/'"$WORKSPACE_NAME"'", 
                       "branch": ""
                     },
                     "no-code": false
