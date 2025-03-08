@@ -82,6 +82,8 @@ jobs:
           
       - name: Echo Workspace Access URL
         if: ${{ env.exists == 'false' }}
+        env:
+          WORKSPACE_NAME: ${{ needs.get-repo-name.outputs.sanitized_repo_name }}
         run: |
           echo "This is the access to your workspace VCS, and start plan to test your code:"
           echo "https://app.terraform.io/app/veloso/workspaces/$WORKSPACE_NAME"
