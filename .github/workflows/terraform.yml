@@ -133,8 +133,10 @@ jobs:
           TF_API_TEAM_TOKEN: ${{ secrets.TF_API_TEAM_TOKEN }}
           OAUTH_TOKEN_ID: ${{ secrets.OAUTH_TOKEN_ID }}
           ORGANIZATION_NAME: veloso
-          WORKSPACE_NAME: terraform-azure-resource-group
+          WORKSPACE_NAME: ${{ needs.get-repo-name.outputs.sanitized_repo_name }}
+
         run: |
+          echo "Workspace Name is: ${{ needs.get-repo-name.outputs.sanitized_repo_name }}"
           # Prompt the user to decide whether to publish the Terraform module (true/false)
           PUBLISH_MODULE=true  # Set this to true or false based on your decision
 
