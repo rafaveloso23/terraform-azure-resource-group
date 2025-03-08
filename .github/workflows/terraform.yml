@@ -26,9 +26,10 @@ jobs:
         id: check_workspace
         env:
           TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
+          ORGANIZATION_NAME: veloso
           WORKSPACE_NAME: ${{ needs.get-repo-name.outputs.sanitized_repo_name }}
         run: |
-          response=$(curl -s -o /dev/null -w "%{http_code}" -X GET "https://app.terraform.io/api/v2/organizations/veloso/workspaces/$WORKSPACE_NAME" \
+          response=$(curl -s -o /dev/null -w "%{http_code}" -X GET "https://app.terraform.io/api/v2/organizations/${{ env.ORGANIZATION_NAME }}/workspaces/$WORKSPACE_NAME" \
             -H "Authorization: Bearer $TF_API_TOKEN" \
             -H "Accept: application/json" \
             -H "Content-Type: application/vnd.api+json")
@@ -49,9 +50,10 @@ jobs:
         env:
           TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
           OAUTH_TOKEN_ID: ${{ secrets.OAUTH_TOKEN_ID }}
+          ORGANIZATION_NAME: veloso
           WORKSPACE_NAME: ${{ needs.get-repo-name.outputs.sanitized_repo_name }}
         run: |
-          curl -X POST "https://app.terraform.io/api/v2/organizations/veloso/workspaces" \
+          curl -X POST "https://app.terraform.io/api/v2/organizations/${{ env.ORGANIZATION_NAME }}/workspaces" \
             -H "Authorization: Bearer $TF_API_TOKEN" \
             -H "Accept: application/json" \
             -H "Content-Type: application/vnd.api+json" \
@@ -83,11 +85,12 @@ jobs:
       - name: Echo Workspace Access URL
         env:
           WORKSPACE_NAME: ${{ needs.get-repo-name.outputs.sanitized_repo_name }}
+          ORGANIZATION_NAME: veloso
         run: |
           echo "The workspace for your repository has been successfully created."
           echo "You can now access the workspace VCS and initiate the plan to test your infrastructure code."
           echo ""
           echo "Workspace Access URL:"
-          echo "https://app.terraform.io/app/veloso/workspaces/$WORKSPACE_NAME"
+          echo "https://app.terraform.io/app/${{ env.ORGANIZATION_NAME }}/workspaces/$WORKSPACE_NAME"
           echo ""
           echo "Please proceed with the necessary actions to validate your changes and trigger the execution."
