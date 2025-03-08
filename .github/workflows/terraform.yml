@@ -29,6 +29,8 @@ jobs:
           echo "sanitized_repo_name=$SANITIZED_NAME" >> "$GITHUB_OUTPUT"
 
   api_request:
+    outputs:
+      sanitized_repo_name: ${{ needs.get-repo-name.outputs.sanitized_repo_name }}
     runs-on: ubuntu-latest
     needs: get-repo-name
     steps:
@@ -115,10 +117,10 @@ jobs:
           TF_API_TEAM_TOKEN: ${{ secrets.TF_API_TEAM_TOKEN }}
           OAUTH_TOKEN_ID: ${{ secrets.OAUTH_TOKEN_ID }}
           ORGANIZATION_NAME: veloso
-          WORKSPACE_NAME: ${{ needs.get-repo-name.outputs.sanitized_repo_name }}
+          WORKSPACE_NAME: ${{ needs.api_request.outputs.sanitized_repo_name }}
 
         run: |
-          echo "Workspace Name is: ${{ needs.get-repo-name.outputs.sanitized_repo_name }}"
+          echo "Workspace Name is: ${{ needs.api_request.outputs.sanitized_repo_name }}"
           # Prompt the user to decide whether to publish the Terraform module (true/false)
           PUBLISH_MODULE=true  # Set this to true or false based on your decision
 
