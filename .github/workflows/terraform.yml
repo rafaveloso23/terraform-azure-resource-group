@@ -101,7 +101,7 @@ jobs:
           echo "You can now access the workspace VCS and initiate the plan to test your infrastructure code."
           echo ""
           echo "Workspace Access URL:"
-          echo "https://app.terraform.io/app/${{ env.ORGANIZATION_NAME }}/workspaces/$WORKSPACE_NAME"
+          echo "https://app.terraform.io/app/${{ env.ORGANIZATION_NAME }}/workspaces/${{ env.WORKSPACE_NAME }}"
           echo ""
           echo "Please proceed with the necessary actions to validate your changes and trigger the execution."
 
@@ -142,16 +142,16 @@ jobs:
             echo "Publishing the Terraform module..."
 
             curl -X POST "https://app.terraform.io/api/v2/organizations/${{ env.ORGANIZATION_NAME }}/registry-modules/vcs" \
-              -H "Authorization: Bearer $TF_API_TEAM_TOKEN" \
+              -H "Authorization: Bearer ${{ env.TF_API_TEAM_TOKEN }}" \
               -H "Accept: application/json" \
               -H "Content-Type: application/vnd.api+json" \
               -d '{
                 "data": {
                   "attributes": {
                     "vcs-repo": {
-                      "identifier": "rafaveloso23/'"${{ env.WORKSPACE_NAME }}"'",
-                      "oauth-token-id": "'"$OAUTH_TOKEN_ID"'",
-                      "display_identifier": "rafaveloso23/'"${{ env.WORKSPACE_NAME }}"'",
+                      "identifier": "rafaveloso23/${{ env.WORKSPACE_NAME }}",
+                      "oauth-token-id": "${{ env.OAUTH_TOKEN_ID }}",
+                      "display_identifier": "rafaveloso23/${{ env.WORKSPACE_NAME }}",
                       "branch": ""
                     },
                     "no-code": false
