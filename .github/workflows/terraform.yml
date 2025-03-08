@@ -120,28 +120,21 @@ jobs:
           WORKSPACE_NAME: ${{ needs.api_request.outputs.sanitized_repo_name }}
 
         run: |
-          echo "Workspace Name is: ${{ needs.api_request.outputs.sanitized_repo_name }}"
-          # Prompt the user to decide whether to publish the Terraform module (true/false)
-          PUBLISH_MODULE=true  # Set this to true or false based on your decision
-
-          if [ "$PUBLISH_MODULE" = true ]; then
-            echo "Publishing the Terraform module..."
-
-            curl -X POST "https://app.terraform.io/api/v2/organizations/${{ env.ORGANIZATION_NAME }}/registry-modules/vcs" \
-              -H "Authorization: Bearer $TF_API_TEAM_TOKEN" \
-              -H "Accept: application/json" \
-              -H "Content-Type: application/vnd.api+json" \
-              -d '{
-                "data": {
-                  "attributes": {
-                    "vcs-repo": {
-                      "identifier": "rafaveloso23/'"$WORKSPACE_NAME"'", 
-                      "oauth-token-id": "'"$OAUTH_TOKEN_ID"'",
-                      "display_identifier": "rafaveloso23/'"$WORKSPACE_NAME"'", 
-                      "branch": ""
-                    },
-                    "no-code": false
+          curl -X POST "https://app.terraform.io/api/v2/organizations/${{ env.ORGANIZATION_NAME }}/registry-modules/vcs" \
+            -H "Authorization: Bearer $TF_API_TEAM_TOKEN" \
+            -H "Accept: application/json" \
+            -H "Content-Type: application/vnd.api+json" \
+            -d '{
+              "data": {
+                "attributes": {
+                  "vcs-repo": {
+                    "identifier": "rafaveloso23/'"$WORKSPACE_NAME"'", 
+                    "oauth-token-id": "'"$OAUTH_TOKEN_ID"'",
+                    "display_identifier": "rafaveloso23/'"$WORKSPACE_NAME"'", 
+                    "branch": ""
                   },
-                  "type": "registry-modules"
-                }
-              }'
+                  "no-code": false
+                },
+                "type": "registry-modules"
+              }
+            }'
