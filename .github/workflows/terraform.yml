@@ -1,78 +1,58 @@
-name: Terraform CI Workflow
+name: Terraform API Request
 
 on:
   pull_request:
     branches:
       - main
 
-permissions:
-  contents: read
-  id-token: write  # Required for OIDC authentication
-
 jobs:
-  terraform-dev:
-    name: 'Terraform Validation (Development)'
+  get-repo-name:
     runs-on: ubuntu-latest
-    environment: development
-    env:
-      TF_WORKSPACE: ${{ secrets.TF_WORKSPACE_DEV }}
-
+    outputs:
+      sanitized_repo_name: ${{ steps.sanitize_repo.outputs.sanitized_repo_name }}
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Configure Git Credentials
+      - name: Extract and Sanitize Repository Name
+        id: sanitize_repo
         run: |
-          git config --global url."https://${{ secrets.REPO_TOKEN }}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+          REPO_NAME="${GITHUB_REPOSITORY#*/}"
+          SANITIZED_NAME=$(echo "$REPO_NAME" | tr '.' '-')
+          echo "sanitized_repo_name=$SANITIZED_NAME" >> "$GITHUB_OUTPUT"
 
-      - name: Install Azure CLI
+  api_request:
+    runs-on: ubuntu-latest
+    needs: get-repo-name
+    steps:
+      - name: Make API Request
+        env:
+          TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
+          OAUTH_TOKEN: ${{ secrets.OAUTH_TOKEN }}
+          WORKSPACE_NAME: ${{ needs.get-repo-name.outputs.sanitized_repo_name }}
         run: |
-          sudo apt-get update
-          sudo apt-get install -y azure-cli
-
-      - name: Azure CLI Login
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID_DEV }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID_DEV }}
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: 1.6.0
-          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
-
-      - name: Set Azure Environment Variables
-        run: |
-          export ARM_SUBSCRIPTION_ID=${{ secrets.AZURE_SUBSCRIPTION_ID_DEV }}
-          export ARM_CLIENT_ID=${{ secrets.AZURE_CLIENT_ID_DEV }}
-          export ARM_TENANT_ID=${{ secrets.AZURE_TENANT_ID }}
-
-      - name: Ensure Provider Block Exists
-        run: |
-          cat <<EOF > provider.tf
-          provider "azurerm" {
-            subscription_id = "${{ secrets.AZURE_SUBSCRIPTION_ID_DEV }}"
-            features {}
-          }
-          EOF
-        
-      - name: Initialize Terraform
-        run: terraform init
-
-      - name: Terraform Format Check
-        run: terraform fmt -check -diff
-
-      - name: Terraform Validate
-        run: terraform validate
-
-      - name: Terraform Plan
-        run: terraform plan -out=tfplan
-
-      - name: Generate GitHub Annotations (Warnings)
-        run: |
-          terraform plan -no-color | tee plan_output.txt
-          grep -E "Warning:" plan_output.txt | while read -r line; do
-            echo "::warning file=terraform.tf::${line}"
-          done
+          curl -X POST "https://app.terraform.io/api/v2/organizations/veloso/workspaces" \
+            -H "Authorization: Bearer $TF_API_TOKEN" \
+            -H "Accept: application/json" \
+            -H "Content-Type: application/vnd.api+json" \
+            -d '{
+              "data": {
+                "type": "workspaces",
+                "attributes": {
+                  "name": "'"$WORKSPACE_NAME"'",  
+                  "terraform_version": "1.6.0",
+                  "file-triggers-enabled": false,
+                  "working-directory": "",
+                  "vcs-repo": {
+                    "identifier": "rafaveloso23/'"$WORKSPACE_NAME"'", 
+                    "oauth-token-id": "'"$OAUTH_TOKEN"'",
+                    "tags-regex": "\\d+\\.\\d+\\.\\d+"
+                  }
+                },
+                "relationships": {
+                    "project": {
+                        "data": {
+                            "type": "projects",
+                            "id": "prj-Q9eBYAsfU5yYxbBF"
+                        }
+                    }
+                }
+              }
+            }'
