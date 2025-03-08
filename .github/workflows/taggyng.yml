@@ -16,9 +16,14 @@ jobs:
       - name: Get PR Details
         id: check_merge
         run: |
-          PR_MERGED=$(gh pr view ${{ github.event.pull_request.number }} --json merged -q .merged || echo "false")
-          echo "merged=$PR_MERGED" >> $GITHUB_ENV
-          echo "merged=$PR_MERGED" >> $GITHUB_OUTPUT
+          PR_MERGED_AT=$(gh pr view ${{ github.event.pull_request.number }} --json mergedAt -q .mergedAt || echo "")
+          if [[ -n "$PR_MERGED_AT" ]]; then
+            echo "merged=true" >> $GITHUB_ENV
+            echo "merged=true" >> $GITHUB_OUTPUT
+          else
+            echo "merged=false" >> $GITHUB_ENV
+            echo "merged=false" >> $GITHUB_OUTPUT
+          fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
