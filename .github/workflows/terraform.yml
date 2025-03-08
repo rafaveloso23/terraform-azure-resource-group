@@ -131,6 +131,7 @@ jobs:
       - name: Conditional POST API Request to Publish Module
         env:
           TF_API_TEAM_TOKEN: ${{ secrets.TF_API_TEAM_TOKEN }}
+          OAUTH_TOKEN_ID: ${{ secrets.OAUTH_TOKEN_ID }}
           ORGANIZATION_NAME: veloso
           WORKSPACE_NAME: ${{ needs.get-repo-name.outputs.sanitized_repo_name }}
         run: |
@@ -149,7 +150,7 @@ jobs:
                   "attributes": {
                     "vcs-repo": {
                       "identifier": "rafaveloso23/$WORKSPACE_NAME",
-                      "oauth-token-id": "ot-wA35FqioPs6EfhUi",
+                      "oauth-token-id": "'"$OAUTH_TOKEN_ID"'",
                       "display_identifier": "rafaveloso23/$WORKSPACE_NAME",
                       "branch": ""
                     },
