@@ -142,7 +142,7 @@ jobs:
             echo "Publishing the Terraform module..."
 
             curl -X POST "https://app.terraform.io/api/v2/organizations/${{ env.ORGANIZATION_NAME }}/registry-modules/vcs" \
-              -H "Authorization: Bearer ${{ env.TF_API_TEAM_TOKEN }}" \
+              -H "Authorization: Bearer $TF_API_TEAM_TOKEN" \
               -H "Accept: application/json" \
               -H "Content-Type: application/vnd.api+json" \
               -d '{
