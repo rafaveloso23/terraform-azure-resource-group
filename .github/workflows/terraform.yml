@@ -22,7 +22,30 @@ jobs:
     runs-on: ubuntu-latest
     needs: get-repo-name
     steps:
-      - name: Make API Request
+      - name: Check if workspace exists
+        id: check_workspace
+        env:
+          TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
+          WORKSPACE_NAME: ${{ needs.get-repo-name.outputs.sanitized_repo_name }}
+        run: |
+          response=$(curl -s -o /dev/null -w "%{http_code}" -X GET "https://app.terraform.io/api/v2/organizations/veloso/workspaces/$WORKSPACE_NAME" \
+            -H "Authorization: Bearer $TF_API_TOKEN" \
+            -H "Accept: application/json" \
+            -H "Content-Type: application/vnd.api+json")
+          
+          if [[ "$response" -eq 200 ]]; then
+            echo "Workspace $WORKSPACE_NAME already exists."
+            echo "exists=true" >> $GITHUB_ENV
+          elif [[ "$response" -eq 404 ]]; then
+            echo "Workspace $WORKSPACE_NAME does not exist, creating now."
+            echo "exists=false" >> $GITHUB_ENV
+          else
+            echo "Error checking workspace status. Response code: $response"
+            exit 1
+          fi
+
+      - name: Create a Workspace Terraform HCP
+        if: ${{ env.exists == 'false' }}
         env:
           TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
           OAUTH_TOKEN_ID: ${{ secrets.OAUTH_TOKEN_ID }}
@@ -47,12 +70,18 @@ jobs:
                   }
                 },
                 "relationships": {
-                    "project": {
-                        "data": {
-                            "type": "projects",
-                            "id": "prj-Q9eBYAsfU5yYxbBF"
-                        }
+                  "project": {
+                    "data": {
+                      "type": "projects",
+                      "id": "prj-Q9eBYAsfU5yYxbBF"
                     }
+                  }
                 }
               }
             }'
+          
+      - name: Echo Workspace Access URL
+        if: ${{ env.exists == 'false' }}
+        run: |
+          echo "This is the access to your workspace VCS, and start plan to test your code:"
+          echo "https://app.terraform.io/app/veloso/workspaces/$WORKSPACE_NAME"
