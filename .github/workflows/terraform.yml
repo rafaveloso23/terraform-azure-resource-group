@@ -4,6 +4,16 @@ on:
   pull_request:
     branches:
       - main
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: "Do you want to publish your Terraform module?"
+        required: true
+        default: "no"
+        type: choice
+        options:
+          - "yes"
+          - "no"
 
 jobs:
   get-repo-name:
@@ -95,10 +105,14 @@ jobs:
           echo ""
           echo "Please proceed with the necessary actions to validate your changes and trigger the execution."
 
-      - name: Ask If You Want to Publish Terraform Module
-        id: ask_publish
+      - name: Wait for Response
+        id: user_response
         run: |
-          echo "##[group]Want to publish your Terraform module?"
-          echo "Please respond with 'yes' to publish, or 'no' to skip."
-          echo "##[endgroup]"
-        continue-on-error: true          
+          echo "Please answer the prompt above by selecting 'yes' or 'no'."
+        continue-on-error: true
+
+      - name: Publish Module
+        if: ${{ github.event.inputs.publish == 'yes' }}
+        run: |
+          echo "Publishing your Terraform module now..."
+          # Add the necessary command to publish the module, e.g., terraform publish
