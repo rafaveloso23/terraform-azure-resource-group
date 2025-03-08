@@ -44,12 +44,28 @@ jobs:
       - name: Get Latest Tag
         id: get_latest_tag
         run: |
-          LATEST_TAG=$(git tag --sort=-v:refname | head -n 1 || echo "v0.0.0")
-          IFS='.' read -r -a TAG_PARTS <<< "${LATEST_TAG//v/}"
-          PATCH=$((TAG_PARTS[2] + 1))
-          NEW_TAG="v${TAG_PARTS[0]}.${TAG_PARTS[1]}.$PATCH"
-          echo "NEW_TAG=$NEW_TAG" >> $GITHUB_ENV
-          echo "NEW_TAG=$NEW_TAG" >> $GITHUB_OUTPUT
+            LATEST_TAG=$(git tag --sort=-v:refname | head -n 1 || echo "")
+        
+            # If no tag exists, set a default tag
+            if [[ -z "$LATEST_TAG" ]]; then
+              NEW_TAG="v1.0.0"
+            else
+              # Extract numbers safely
+              TAG_VERSION="${LATEST_TAG#v}"  # Remove 'v' prefix if present
+              IFS='.' read -r -a TAG_PARTS <<< "$TAG_VERSION"
+        
+              # Ensure we have at least three parts
+              MAJOR=${TAG_PARTS[0]:-1}
+              MINOR=${TAG_PARTS[1]:-0}
+              PATCH=${TAG_PARTS[2]:-0}
+        
+              # Increment the PATCH version
+              PATCH=$((PATCH + 1))
+              NEW_TAG="v$MAJOR.$MINOR.$PATCH"
+            fi
+        
+            echo "NEW_TAG=$NEW_TAG" >> $GITHUB_ENV
+            echo "NEW_TAG=$NEW_TAG" >> $GITHUB_OUTPUT
 
       - name: Create and Push New Tag
         run: |
