@@ -81,7 +81,6 @@ jobs:
             }'
           
       - name: Echo Workspace Access URL
-        if: ${{ env.exists == 'false' }}
         env:
           WORKSPACE_NAME: ${{ needs.get-repo-name.outputs.sanitized_repo_name }}
         run: |
