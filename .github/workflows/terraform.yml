@@ -25,7 +25,7 @@ jobs:
       - name: Make API Request
         env:
           TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
-          OAUTH_TOKEN: ${{ secrets.OAUTH_TOKEN }}
+          OAUTH_TOKEN_ID: ${{ secrets.OAUTH_TOKEN_ID }}
           WORKSPACE_NAME: ${{ needs.get-repo-name.outputs.sanitized_repo_name }}
         run: |
           curl -X POST "https://app.terraform.io/api/v2/organizations/veloso/workspaces" \
@@ -42,7 +42,7 @@ jobs:
                   "working-directory": "",
                   "vcs-repo": {
                     "identifier": "rafaveloso23/'"$WORKSPACE_NAME"'", 
-                    "oauth-token-id": "'"$OAUTH_TOKEN"'",
+                    "oauth-token-id": "'"$OAUTH_TOKEN_ID"'",
                     "tags-regex": "\\d+\\.\\d+\\.\\d+"
                   }
                 },
