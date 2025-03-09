@@ -87,7 +87,7 @@ jobs:
           TF_API_TEAM_TOKEN: ${{ secrets.TF_API_TEAM_TOKEN }}
           OAUTH_TOKEN_ID: ${{ secrets.OAUTH_TOKEN_ID }}
           ORGANIZATION_NAME: veloso
-          WORKSPACE_NAME: ${{ github.repository }}
+          ORG_WORKSPACE_NAME: ${{ github.repository }}
 
         run: |
           curl -X POST "https://app.terraform.io/api/v2/organizations/${{ env.ORGANIZATION_NAME }}/registry-modules/vcs" \
@@ -98,9 +98,9 @@ jobs:
               "data": {
                 "attributes": {
                   "vcs-repo": {
-                    "identifier": "rafaveloso23/'"$WORKSPACE_NAME"'", 
+                    "identifier": ""$ORG_WORKSPACE_NAME"'", 
                     "oauth-token-id": "'"$OAUTH_TOKEN_ID"'",
-                    "display_identifier": "rafaveloso23/'"$WORKSPACE_NAME"'", 
+                    "display_identifier": ""$ORG_WORKSPACE_NAME"'", 
                     "branch": ""
                   },
                   "no-code": false
