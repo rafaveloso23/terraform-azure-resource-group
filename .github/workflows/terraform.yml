@@ -4,16 +4,9 @@ on:
   pull_request:
     branches:
       - main
-  workflow_dispatch:
-    inputs:
-      publish:
-        description: "Do you want to publish your Terraform module?"
-        required: true
-        default: "no"
-        type: choice
-        options:
-          - "yes"
-          - "no"
+
+permissions:
+  contents: write
 
 jobs:
   get_repo_name:
@@ -27,6 +20,9 @@ jobs:
           REPO_NAME="${GITHUB_REPOSITORY#*/}"
           SANITIZED_NAME=$(echo "$REPO_NAME" | tr '.' '-')
           echo "sanitized_repo_name=$SANITIZED_NAME" >> "$GITHUB_OUTPUT"
+
+      - name: Save workspace name in environment
+        run: echo "WORKSPACE_NAME=${{ needs.create_workspace.outputs.sanitized_repo_name }}" >> $GITHUB_ENV
 
   create_workspace:
     outputs:
@@ -106,36 +102,3 @@ jobs:
           echo "https://app.terraform.io/app/${{ env.ORGANIZATION_NAME }}/workspaces/${{ env.WORKSPACE_NAME }}"
           echo ""
           echo "Please proceed with the necessary actions to validate your changes and trigger the execution."
-      
-  publish_hcp_module:
-    name: Publish Terraform Module
-    runs-on: ubuntu-latest
-    needs: create_workspace
-    if: ${{ github.ref == 'refs/tags/*' }}
-    steps:
-      - name: Conditional POST API Request to Publish Module
-        env:
-          TF_API_TEAM_TOKEN: ${{ secrets.TF_API_TEAM_TOKEN }}
-          OAUTH_TOKEN_ID: ${{ secrets.OAUTH_TOKEN_ID }}
-          ORGANIZATION_NAME: veloso
-          WORKSPACE_NAME: ${{ needs.create_workspace.outputs.sanitized_repo_name }}
-
-        run: |
-          curl -X POST "https://app.terraform.io/api/v2/organizations/${{ env.ORGANIZATION_NAME }}/registry-modules/vcs" \
-            -H "Authorization: Bearer $TF_API_TEAM_TOKEN" \
-            -H "Accept: application/json" \
-            -H "Content-Type: application/vnd.api+json" \
-            -d '{
-              "data": {
-                "attributes": {
-                  "vcs-repo": {
-                    "identifier": "rafaveloso23/'"$WORKSPACE_NAME"'", 
-                    "oauth-token-id": "'"$OAUTH_TOKEN_ID"'",
-                    "display_identifier": "rafaveloso23/'"$WORKSPACE_NAME"'", 
-                    "branch": ""
-                  },
-                  "no-code": false
-                },
-                "type": "registry-modules"
-              }
-            }'
