@@ -20,13 +20,6 @@ jobs:
           REPO_NAME="${GITHUB_REPOSITORY#*/}"
           SANITIZED_NAME=$(echo "$REPO_NAME" | tr '.' '-')
           echo "sanitized_repo_name=$SANITIZED_NAME" >> "$GITHUB_OUTPUT"
-          echo "$SANITIZED_NAME" > workspace_name.txt
-
-      - name: Upload Workspace Name as Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: workspace-name
-          path: workspace_name.txt
 
   create_workspace:
     outputs:
