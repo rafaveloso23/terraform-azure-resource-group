@@ -98,6 +98,8 @@ jobs:
       TF_WORKSPACE: ${{ needs.create_workspace.outputs.sanitized_repo_name }}
       CONFIG_DIRECTORY: "/"
     steps:
+      - run: ls ${{ env.CONFIG_DIRECTORY }}
+
       - uses: actions/checkout@v3
 
       - uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.3.2
