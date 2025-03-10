@@ -88,6 +88,8 @@ jobs:
             }'
 
   Workspace_Access:
+    outputs:
+      sanitized_repo_name: ${{ needs.get_repo_name.outputs.sanitized_repo_name }}
     runs-on: ubuntu-latest
     needs: create_workspace
     steps:
