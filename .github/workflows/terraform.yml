@@ -93,7 +93,7 @@ jobs:
       sanitized_repo_name: ${{ needs.create_workspace.outputs.sanitized_repo_name }}
     runs-on: ubuntu-latest
     env:
-      TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
+      TF_API_TEAM_TOKEN: ${{ secrets.TF_API_TEAM_TOKEN }}
       ORGANIZATION_NAME: veloso
       WORKSPACE_NAME: ${{ needs.create_workspace.outputs.sanitized_repo_name }}
       CONFIG_DIRECTORY: "/"
