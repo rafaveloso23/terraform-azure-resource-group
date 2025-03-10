@@ -94,8 +94,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       TF_API_TOKEN: ${{ secrets.TF_API_TEAM_TOKEN }}
-      ORGANIZATION_NAME: veloso
-      WORKSPACE_NAME: ${{ needs.create_workspace.outputs.sanitized_repo_name }}
+      TF_CLOUD_ORGANIZATION: veloso
+      TF_WORKSPACE: ${{ needs.create_workspace.outputs.sanitized_repo_name }}
       CONFIG_DIRECTORY: "/"
     steps:
       - uses: actions/checkout@v3
@@ -103,7 +103,7 @@ jobs:
       - uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.3.2
         id: upload
         with:
-          workspace: ${{ env.WORKSPACE_NAME }}
+          workspace: ${{ env.TF_WORKSPACE }}
           directory: ${{ env.CONFIG_DIRECTORY }}
           speculative: true
 
@@ -113,7 +113,7 @@ jobs:
         ## step.terraform-cloud-check-run-status will fail job after pr comment is created/updated.
         continue-on-error: true
         with:
-          workspace: ${{ env.WORKSPACE_NAME }}
+          workspace: ${{ env.TF_WORKSPACE }}
           configuration_version: ${{ steps.upload.outputs.configuration_version_id }}
           plan_only: true
           ## OPTIONAL: set your own message for run. A default message will be defined for you.
