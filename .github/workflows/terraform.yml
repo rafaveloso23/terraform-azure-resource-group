@@ -68,8 +68,7 @@ jobs:
                 "attributes": {
                   "name": "'"$WORKSPACE_NAME"'",  
                   "terraform_version": "1.6.0",
-                  "file-triggers-enabled": true,
-                  "trigger-patterns": ["*.tf", "*.hcl"],
+                  "file-triggers-enabled": false,
                   "working-directory": "",
                   "vcs-repo": {
                     "identifier": "rafaveloso23/'"$WORKSPACE_NAME"'", 
@@ -87,7 +86,11 @@ jobs:
                 }
               }
             }'
-          
+
+  Workspace_Access:
+    runs-on: ubuntu-latest
+    needs: create_workspace
+    steps:
       - name: Echo Workspace Access URL
         env:
           WORKSPACE_NAME: ${{ needs.get_repo_name.outputs.sanitized_repo_name }}
