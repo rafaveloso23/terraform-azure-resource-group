@@ -1,0 +1,79 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.0.16 Chrome/132.0.6834.196 Electron/34.2.0 Safari/537.36" version="26.0.16">
+  <diagram id="J7G9BTKQd3DtVVP7A2xN" name="workflow">
+    <mxGraphModel dx="1373" dy="669" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="5" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="JEZVYYpx8W_8_LnFTRmD-2" value="" style="verticalLabelPosition=bottom;html=1;verticalAlign=top;align=center;strokeColor=none;fillColor=#00BEF2;shape=mxgraph.azure.github_code;pointerEvents=1;" vertex="1" parent="1">
+          <mxGeometry x="635" y="16" width="50" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="JEZVYYpx8W_8_LnFTRmD-3" value="" style="verticalLabelPosition=bottom;html=1;verticalAlign=top;align=center;strokeColor=none;fillColor=#00BEF2;shape=mxgraph.azure.git_repository;" vertex="1" parent="1">
+          <mxGeometry x="82" y="96" width="50" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="JEZVYYpx8W_8_LnFTRmD-4" value="" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="453" y="114" width="146" height="229" as="geometry" />
+        </mxCell>
+        <mxCell id="JEZVYYpx8W_8_LnFTRmD-5" value="&lt;b&gt;Workflow&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="391" y="101" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="JEZVYYpx8W_8_LnFTRmD-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="JEZVYYpx8W_8_LnFTRmD-6" target="JEZVYYpx8W_8_LnFTRmD-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="JEZVYYpx8W_8_LnFTRmD-6" value="&lt;b&gt;get_repo_name&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="473" y="132" width="113" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="JEZVYYpx8W_8_LnFTRmD-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="JEZVYYpx8W_8_LnFTRmD-7" target="JEZVYYpx8W_8_LnFTRmD-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="JEZVYYpx8W_8_LnFTRmD-7" value="&lt;b&gt;create_workspace&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="473" y="205" width="113" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="JEZVYYpx8W_8_LnFTRmD-8" value="&lt;b&gt;workspace_access&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="473" y="276" width="114" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="JEZVYYpx8W_8_LnFTRmD-12" value="&lt;b&gt;30sec&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="587" y="84" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="JEZVYYpx8W_8_LnFTRmD-14" value="&lt;b&gt;terraform-&amp;lt;provider&amp;gt;-&amp;lt;module-name&amp;gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="139" y="86" width="222" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="JEZVYYpx8W_8_LnFTRmD-15" value=".github/workflows/*&lt;div&gt;main.tf&lt;/div&gt;&lt;div&gt;output.tf&lt;/div&gt;&lt;div&gt;variables.tf&lt;/div&gt;&lt;div&gt;readme.tf&lt;/div&gt;&lt;div&gt;providers.tf&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=left;" vertex="1" parent="1">
+          <mxGeometry x="157" y="116" width="134" height="94" as="geometry" />
+        </mxCell>
+        <mxCell id="JEZVYYpx8W_8_LnFTRmD-31" value="" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="748" y="116" width="146" height="229" as="geometry" />
+        </mxCell>
+        <mxCell id="JEZVYYpx8W_8_LnFTRmD-32" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="JEZVYYpx8W_8_LnFTRmD-33" target="JEZVYYpx8W_8_LnFTRmD-35">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="JEZVYYpx8W_8_LnFTRmD-33" value="&lt;b&gt;check_merge_status&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="757" y="134" width="129" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="JEZVYYpx8W_8_LnFTRmD-34" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="JEZVYYpx8W_8_LnFTRmD-35" target="JEZVYYpx8W_8_LnFTRmD-36">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="JEZVYYpx8W_8_LnFTRmD-35" value="&lt;b&gt;Add_New_Tag&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="758" y="207" width="123" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="JEZVYYpx8W_8_LnFTRmD-36" value="&lt;b&gt;Publish_TF_Module&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="758" y="278" width="129" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="JEZVYYpx8W_8_LnFTRmD-40" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=-0.001;entryY=0.488;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="JEZVYYpx8W_8_LnFTRmD-4" target="JEZVYYpx8W_8_LnFTRmD-31">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="JEZVYYpx8W_8_LnFTRmD-41" value="&lt;b&gt;Merge Approved&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="607" y="201" width="112" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="JEZVYYpx8W_8_LnFTRmD-42" value="&lt;b&gt;30sec&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="891" y="84" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="JEZVYYpx8W_8_LnFTRmD-43" value="&lt;b&gt;Template&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="184" y="58" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="JEZVYYpx8W_8_LnFTRmD-44" value="&lt;b&gt;Workflow&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="698" y="88" width="60" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
