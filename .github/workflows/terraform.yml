@@ -88,6 +88,7 @@ jobs:
             }'
 
   terraform-cloud-speculative-run:
+    needs: create_workspace
     outputs:
       sanitized_repo_name: ${{ needs.create_workspace.outputs.sanitized_repo_name }}
     runs-on: ubuntu-latest
