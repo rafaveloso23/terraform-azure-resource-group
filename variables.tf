@@ -8,10 +8,10 @@ variable "location" {
   default = "East US"
 }
 
-# variable "tags" {
-#   type = map(string)
-#   default = {
-#     environment = "dev"
-#     costcenter  = "it"
-#   }
-# }
+variable "tags" {
+  type = map(string)
+  default = {
+    environment = "dev"
+    costcenter  = "it"
+  }
+}
