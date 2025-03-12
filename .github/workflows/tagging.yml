@@ -82,7 +82,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: add_new_tag
     steps:
-
       - name: Get repository info
         run: |
           # Get the repository name from the github.repository output
@@ -130,15 +129,14 @@ jobs:
     name: Publish Terraform Module
     runs-on: ubuntu-latest
     needs: check_module_exists
-    steps:      
+    steps:
       - name: Conditional POST API Request to Publish Module
-        if: env.module_exists == 'false'
+        if: ${{ env.module_exists == 'false' }}  # This ensures the step runs only if the module does not exist
         env:
           TF_API_TEAM_TOKEN: ${{ secrets.TF_API_TEAM_TOKEN }}
           OAUTH_TOKEN_ID: ${{ secrets.OAUTH_TOKEN_ID }}
           ORGANIZATION_NAME: veloso
           ORG_WORKSPACE_NAME: ${{ github.repository }}
-
         run: |
           curl -X POST "https://app.terraform.io/api/v2/organizations/${{ env.ORGANIZATION_NAME }}/registry-modules/vcs" \
             -H "Authorization: Bearer $TF_API_TEAM_TOKEN" \
