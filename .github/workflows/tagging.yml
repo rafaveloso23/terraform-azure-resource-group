@@ -90,13 +90,16 @@ jobs:
           MODULE_NAME: ${{ github.repository }}  # Full repo name (e.g., rafaveloso23/terraform-azure-resource-group)
         run: |
           # Extract module basename (e.g., "terraform-azure-resource-group" from "rafaveloso23/terraform-azure-resource-group")
-          MODULE_BASENAME=$(echo "${MODULE_NAME}" | awk -F'/' '{print $2}')
+          MODULE_BASENAME=$(basename "${MODULE_NAME}")
 
-          # Extract provider name (second part of "terraform-<provider>-<resource>")
-          PROVIDER_NAME=$(echo "${MODULE_BASENAME}" | cut -d'-' -f2)
-
-          # Extract resource name (third part of "terraform-<provider>-<resource>")
-          RESOURCE_NAME=$(echo "${MODULE_BASENAME}" | cut -d'-' -f3-)
+          # Ensure the module follows the naming pattern "terraform-<provider>-<resource>"
+          if [[ $MODULE_BASENAME =~ terraform-([^-]+)-(.+) ]]; then
+            PROVIDER_NAME="${BASH_REMATCH[1]}"
+            RESOURCE_NAME="${BASH_REMATCH[2]}"
+          else
+            echo "Error: Module name does not match expected pattern 'terraform-<provider>-<resource>'"
+            exit 1
+          fi
 
           echo "Extracted module name: $MODULE_BASENAME"
           echo "Extracted provider name: $PROVIDER_NAME"
@@ -121,9 +124,6 @@ jobs:
             echo "Error checking module status. Response code: $response"
             exit 1
           fi
-
-
-
 
   publish_hcp_module:
     name: Publish Terraform Module
