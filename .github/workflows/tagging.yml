@@ -95,27 +95,33 @@ jobs:
           # Extract provider name (second part of "terraform-<provider>-<resource>")
           PROVIDER_NAME=$(echo "${MODULE_BASENAME}" | cut -d'-' -f2)
 
+          # Extract resource name (third part of "terraform-<provider>-<resource>")
+          RESOURCE_NAME=$(echo "${MODULE_BASENAME}" | cut -d'-' -f3-)
+
           echo "Extracted module name: $MODULE_BASENAME"
           echo "Extracted provider name: $PROVIDER_NAME"
+          echo "Extracted resource name: $RESOURCE_NAME"
 
           echo "MODULE_BASENAME=$MODULE_BASENAME" >> $GITHUB_ENV
           echo "PROVIDER_NAME=$PROVIDER_NAME" >> $GITHUB_ENV
+          echo "RESOURCE_NAME=$RESOURCE_NAME" >> $GITHUB_ENV
 
           # Check if module exists in Terraform Cloud
-          response=$(curl -s -o /dev/null -w "%{http_code}" -X GET "https://app.terraform.io/api/v2/organizations/${{ env.ORGANIZATION_NAME }}/registry-modules/private/${{ env.ORGANIZATION_NAME }}/${{ env.MODULE_BASENAME }}/${{ env.PROVIDER_NAME }}" \
+          response=$(curl -s -o /dev/null -w "%{http_code}" -X GET "https://app.terraform.io/api/v2/organizations/${{ env.ORGANIZATION_NAME }}/registry-modules/private/${{ env.ORGANIZATION_NAME }}/${{ env.RESOURCE_NAME }}/${{ env.PROVIDER_NAME }}" \
             -H "Authorization: Bearer $TF_API_TEAM_TOKEN" \
             -H "Accept: application/json")
 
           if [[ "$response" -eq 200 ]]; then
-            echo "Module $MODULE_BASENAME already exists."
+            echo "Module $RESOURCE_NAME already exists."
             echo "module_exists=true" >> $GITHUB_ENV
           elif [[ "$response" -eq 404 ]]; then
-            echo "Module $MODULE_BASENAME does not exist, publishing now."
+            echo "Module $RESOURCE_NAME does not exist, publishing now."
             echo "module_exists=false" >> $GITHUB_ENV
           else
             echo "Error checking module status. Response code: $response"
             exit 1
           fi
+
 
 
 
