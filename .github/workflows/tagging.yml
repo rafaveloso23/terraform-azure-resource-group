@@ -124,14 +124,13 @@ jobs:
             exit 1
           fi
 
-
   publish_hcp_module:
     name: Publish Terraform Module
     runs-on: ubuntu-latest
-    needs: check_module_exists
+    needs: check_module_exists  # This ensures the check_module_exists job must run first
+    if: ${{ env.module_exists == 'false' }}
     steps:
       - name: Conditional POST API Request to Publish Module
-        if: ${{ env.module_exists == 'false' }}  # This ensures the step runs only if the module does not exist
         env:
           TF_API_TEAM_TOKEN: ${{ secrets.TF_API_TEAM_TOKEN }}
           OAUTH_TOKEN_ID: ${{ secrets.OAUTH_TOKEN_ID }}
