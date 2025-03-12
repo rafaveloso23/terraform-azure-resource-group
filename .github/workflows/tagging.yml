@@ -87,23 +87,28 @@ jobs:
         env:
           TF_API_TEAM_TOKEN: ${{ secrets.TF_API_TEAM_TOKEN }}
           ORGANIZATION_NAME: veloso
-          MODULE_NAME: $(basename ${{ github.repository }})  # Extracts repo name as module name
-          PROVIDER_NAME: aws  # Adjust provider name if needed
+          MODULE_NAME: ${{ github.repository }}  # Full repo name (e.g., rafaveloso23/terraform-azure-resource-group)
+          PROVIDER_NAME: aws  # Change provider if needed
         run: |
-          response=$(curl -s -o /dev/null -w "%{http_code}" -X GET "https://app.terraform.io/api/v2/organizations/${{ env.ORGANIZATION_NAME }}/registry-modules/private/${{ env.ORGANIZATION_NAME }}/${{ env.MODULE_NAME }}/${{ env.PROVIDER_NAME }}" \
+          MODULE_BASENAME=$(echo "${MODULE_NAME}" | awk -F'/' '{print $2}')  # Extracts only "terraform-azure-resource-group"
+          echo "Extracted module name: $MODULE_BASENAME"
+          echo "MODULE_BASENAME=$MODULE_BASENAME" >> $GITHUB_ENV
+
+          response=$(curl -s -o /dev/null -w "%{http_code}" -X GET "https://app.terraform.io/api/v2/organizations/${{ env.ORGANIZATION_NAME }}/registry-modules/private/${{ env.ORGANIZATION_NAME }}/${MODULE_BASENAME}/${{ env.PROVIDER_NAME }}" \
             -H "Authorization: Bearer $TF_API_TEAM_TOKEN" \
             -H "Accept: application/json")
           
           if [[ "$response" -eq 200 ]]; then
-            echo "Module $MODULE_NAME already exists."
+            echo "Module $MODULE_BASENAME already exists."
             echo "module_exists=true" >> $GITHUB_ENV
           elif [[ "$response" -eq 404 ]]; then
-            echo "Module $MODULE_NAME does not exist, publishing now."
+            echo "Module $MODULE_BASENAME does not exist, publishing now."
             echo "module_exists=false" >> $GITHUB_ENV
           else
             echo "Error checking module status. Response code: $response"
             exit 1
           fi
+
 
 
   publish_hcp_module:
