@@ -110,7 +110,7 @@ jobs:
           echo "RESOURCE_NAME=$RESOURCE_NAME" >> $GITHUB_ENV
 
           # Check if module exists in Terraform Cloud
-          response=$(curl -s -o /dev/null -w "%{http_code}" -X GET "https://app.terraform.io/api/v2/organizations/${{ env.ORGANIZATION_NAME }}/registry-modules/private/${{ env.ORGANIZATION_NAME }}/${{ env.RESOURCE_NAME }}/${{ env.PROVIDER_NAME }}" \
+          response=$(curl -s -o /dev/null -w "%{http_code}" -X GET "https://app.terraform.io/api/v2/organizations/${{ env.ORGANIZATION_NAME }}/registry-modules/private/${{ env.ORGANIZATION_NAME }}/$RESOURCE_NAME/$PROVIDER_NAME" \
             -H "Authorization: Bearer $TF_API_TEAM_TOKEN" \
             -H "Accept: application/json")
 
