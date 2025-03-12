@@ -82,35 +82,35 @@ jobs:
     runs-on: ubuntu-latest
     needs: add_new_tag
     steps:
+
+      - name: Get repository info
+        run: |
+          # Get the repository name from the github.repository output
+          repo_full_name="${GITHUB_REPOSITORY}"
+          
+          # Split the full name into organization and repository name
+          IFS='/' read -r repo_org_name repository_name <<< "$repo_full_name"
+          
+          # Define the provider and module names
+          provider="azure"
+          module_name="resource-group"
+
+          # Export variables to be used in the next steps
+          echo "repo_org_name=${repo_org_name}" >> $GITHUB_ENV
+          echo "repository_name=${repository_name}" >> $GITHUB_ENV
+          echo "provider=${provider}" >> $GITHUB_ENV
+          echo "module_name=${module_name}" >> $GITHUB_ENV
+
       - name: Check if module exists
         id: check_module
         env:
           TF_API_TEAM_TOKEN: ${{ secrets.TF_API_TEAM_TOKEN }}
           ORGANIZATION_NAME: veloso
-          MODULE_NAME: ${{ github.repository }}  # Full repo name (e.g., rafaveloso23/terraform-azure-resource-group)
+          RESOURCE_NAME: ${{ env.module_name }}  # Use the extracted module name
+          PROVIDER_NAME: ${{ env.provider }}  # Use the provider value
         run: |
-          # Extract module basename (e.g., "terraform-azure-resource-group" from "rafaveloso23/terraform-azure-resource-group")
-          MODULE_BASENAME=$(basename "${MODULE_NAME}")
-
-          # Ensure the module follows the naming pattern "terraform-<provider>-<resource>"
-          if [[ $MODULE_BASENAME =~ terraform-([^-]+)-(.+) ]]; then
-            PROVIDER_NAME="${BASH_REMATCH[1]}"
-            RESOURCE_NAME="${BASH_REMATCH[2]}"
-          else
-            echo "Error: Module name does not match expected pattern 'terraform-<provider>-<resource>'"
-            exit 1
-          fi
-
-          echo "Extracted module name: $MODULE_BASENAME"
-          echo "Extracted provider name: $PROVIDER_NAME"
-          echo "Extracted resource name: $RESOURCE_NAME"
-
-          echo "MODULE_BASENAME=$MODULE_BASENAME" >> $GITHUB_ENV
-          echo "PROVIDER_NAME=$PROVIDER_NAME" >> $GITHUB_ENV
-          echo "RESOURCE_NAME=$RESOURCE_NAME" >> $GITHUB_ENV
-
           # Check if module exists in Terraform Cloud
-          response=$(curl -s -o /dev/null -w "%{http_code}" -X GET "https://app.terraform.io/api/v2/organizations/${{ env.ORGANIZATION_NAME }}/registry-modules/private/${{ env.ORGANIZATION_NAME }}/$RESOURCE_NAME/$PROVIDER_NAME" \
+          response=$(curl -s -o /dev/null -w "%{http_code}" -X GET "https://app.terraform.io/api/v2/organizations/${{ env.ORGANIZATION_NAME }}/registry-modules/private/${{ env.ORGANIZATION_NAME }}/${{ env.RESOURCE_NAME }}/${{ env.PROVIDER_NAME }}" \
             -H "Authorization: Bearer $TF_API_TEAM_TOKEN" \
             -H "Accept: application/json")
 
@@ -124,6 +124,7 @@ jobs:
             echo "Error checking module status. Response code: $response"
             exit 1
           fi
+
 
   publish_hcp_module:
     name: Publish Terraform Module
