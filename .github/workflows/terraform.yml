@@ -71,6 +71,7 @@ jobs:
                   "file-triggers-enabled": false,
                   "auto-apply": false,
                   "speculative-enabled": true,
+                  "queue-all-runs": true,
                   "working-directory": "",
                   "vcs-repo": {
                     "identifier": "rafaveloso23/'"$WORKSPACE_NAME"'", 
