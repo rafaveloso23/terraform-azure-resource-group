@@ -15,3 +15,7 @@ variable "tags" {
     costcenter  = "it"
   }
 }
+
+variable "client_secret" {
+  type = string
+}
