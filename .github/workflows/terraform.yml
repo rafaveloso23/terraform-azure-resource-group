@@ -69,6 +69,8 @@ jobs:
                   "name": "'"$WORKSPACE_NAME"'",  
                   "terraform_version": "1.6.0",
                   "file-triggers-enabled": false,
+                  "auto-apply": false,
+                  "speculative-enabled": true,
                   "working-directory": "",
                   "vcs-repo": {
                     "identifier": "rafaveloso23/'"$WORKSPACE_NAME"'", 
