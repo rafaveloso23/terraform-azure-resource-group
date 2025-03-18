@@ -4,7 +4,7 @@ on:
   pull_request:
     branches:
       - main
-  workflow_dispatch:  # Allows manual trigger
+  workflow_dispatch:
     inputs:
       use_terraform_hcp:
         description: "Run using Terraform Cloud (HCP)?"
@@ -28,7 +28,7 @@ jobs:
           echo "sanitized_repo_name=$SANITIZED_NAME" >> "$GITHUB_OUTPUT"
 
   create_workspace:
-    if: ${{ github.event.inputs.use_terraform_hcp == 'false' }}  # ⬅️ Skip if using Terraform HCP
+    if: ${{ github.event.inputs.use_terraform_hcp == 'false' || github.event.inputs.use_terraform_hcp == '' }}
     outputs:
       sanitized_repo_name: ${{ needs.get_repo_name.outputs.sanitized_repo_name }}
     runs-on: ubuntu-latest
@@ -48,10 +48,10 @@ jobs:
 
           if [[ "$response" -eq 200 ]]; then
             echo "Workspace $WORKSPACE_NAME already exists."
-            echo "exists=true" >> $GITHUB_ENV
+            echo "exists=true" | tee -a $GITHUB_ENV
           elif [[ "$response" -eq 404 ]]; then
             echo "Workspace $WORKSPACE_NAME does not exist, creating now."
-            echo "exists=false" >> $GITHUB_ENV
+            echo "exists=false" | tee -a $GITHUB_ENV
           else
             echo "Error checking workspace status. Response code: $response"
             exit 1
@@ -73,7 +73,7 @@ jobs:
               "data": {
                 "type": "workspaces",
                 "attributes": {
-                  "name": "'"$WORKSPACE_NAME"'",  
+                  "name": "'$WORKSPACE_NAME'",  
                   "terraform_version": "1.6.0",
                   "file-triggers-enabled": false,
                   "auto-apply": false,
@@ -81,8 +81,8 @@ jobs:
                   "queue-all-runs": true,
                   "working-directory": "",
                   "vcs-repo": {
-                    "identifier": "rafaveloso23/'"$WORKSPACE_NAME"'", 
-                    "oauth-token-id": "'"$OAUTH_TOKEN_ID"'",
+                    "identifier": "rafaveloso23/'$WORKSPACE_NAME'", 
+                    "oauth-token-id": "'$OAUTH_TOKEN_ID'",
                     "tags-regex": "null",
                     "branch": ""
                   }
@@ -99,9 +99,7 @@ jobs:
             }'
 
   Workspace_Access:
-    if: ${{ github.event.inputs.use_terraform_hcp == 'false' }}  # ⬅️ Skip if using Terraform HCP
-    outputs:
-      sanitized_repo_name: ${{ needs.create_workspace.outputs.sanitized_repo_name }}
+    if: ${{ github.event.inputs.use_terraform_hcp == 'false' || github.event.inputs.use_terraform_hcp == '' }}
     runs-on: ubuntu-latest
     needs: create_workspace
     steps:
@@ -119,7 +117,7 @@ jobs:
           echo "Please proceed with the necessary actions to validate your changes and trigger the execution."
 
   terraform_hcp:
-    if: ${{ github.event.inputs.use_terraform_hcp == 'true' }}  # ⬅️ Run only if using Terraform HCP
+    if: ${{ github.event.inputs.use_terraform_hcp == 'true' }}
     runs-on: ubuntu-latest
     needs: get_repo_name
     steps:
