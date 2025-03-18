@@ -9,7 +9,7 @@ on:
       use_terraform_hcp:
         description: "Run using Terraform Cloud (HCP)?"
         required: false
-        default: "false"
+        default: "true"
 
 permissions:
   contents: write
