@@ -5,4 +5,15 @@ provider "azurerm" {
   client_secret   = var.client_secret
   tenant_id       = "0eed3ea8-f35c-4862-b14a-9809318064c7"
 }
-##
+#######
+terraform {
+  cloud {
+    organization = "veloso"
+    hostname     = "app.terraform.io" # Optional; defaults to app.terraform.io
+
+    workspaces {
+      project = "Default Project"
+      name    = "teste01"
+    }
+  }
+}
