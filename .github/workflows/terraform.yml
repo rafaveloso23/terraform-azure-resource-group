@@ -1,9 +1,9 @@
 name: Terraform API Request
 
 on:
-  pull_request:
-    branches:
-      - main
+  # pull_request:
+  #   branches:
+  #     - main
   workflow_dispatch:
     inputs:
       use_terraform_hcp:
