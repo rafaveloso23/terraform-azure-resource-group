@@ -4,6 +4,12 @@ on:
   pull_request:
     branches:
       - main
+  workflow_dispatch:  # Allows manual trigger
+    inputs:
+      use_terraform_hcp:
+        description: "Run using Terraform Cloud (HCP)?"
+        required: false
+        default: "false"
 
 permissions:
   contents: write
@@ -22,6 +28,7 @@ jobs:
           echo "sanitized_repo_name=$SANITIZED_NAME" >> "$GITHUB_OUTPUT"
 
   create_workspace:
+    if: ${{ github.event.inputs.use_terraform_hcp == 'false' }}  # ⬅️ Skip if using Terraform HCP
     outputs:
       sanitized_repo_name: ${{ needs.get_repo_name.outputs.sanitized_repo_name }}
     runs-on: ubuntu-latest
@@ -38,7 +45,7 @@ jobs:
             -H "Authorization: Bearer $TF_API_TOKEN" \
             -H "Accept: application/json" \
             -H "Content-Type: application/vnd.api+json")
-          
+
           if [[ "$response" -eq 200 ]]; then
             echo "Workspace $WORKSPACE_NAME already exists."
             echo "exists=true" >> $GITHUB_ENV
@@ -92,6 +99,7 @@ jobs:
             }'
 
   Workspace_Access:
+    if: ${{ github.event.inputs.use_terraform_hcp == 'false' }}  # ⬅️ Skip if using Terraform HCP
     outputs:
       sanitized_repo_name: ${{ needs.create_workspace.outputs.sanitized_repo_name }}
     runs-on: ubuntu-latest
@@ -109,3 +117,33 @@ jobs:
           echo "https://app.terraform.io/app/${{ env.ORGANIZATION_NAME }}/workspaces/${{ env.WORKSPACE_NAME }}"
           echo ""
           echo "Please proceed with the necessary actions to validate your changes and trigger the execution."
+
+  terraform_hcp:
+    if: ${{ github.event.inputs.use_terraform_hcp == 'true' }}  # ⬅️ Run only if using Terraform HCP
+    runs-on: ubuntu-latest
+    needs: get_repo_name
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Inject Terraform Cloud Configuration
+        run: |
+          cat <<EOF > providers.tf
+          terraform {
+            cloud {
+              organization = "veloso"
+              hostname     = "app.terraform.io"
+
+              workspaces {
+                project = "Default Project"
+                name    = "${{ needs.get_repo_name.outputs.sanitized_repo_name }}"
+              }
+            }
+          }
+          EOF
+
+      - name: Initialize Terraform
+        run: terraform init
+
+      - name: Plan Terraform
+        run: terraform plan
