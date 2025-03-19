@@ -129,7 +129,7 @@ jobs:
 
       - name: Inject Terraform Cloud Configuration
         run: |
-          cat <<EOF > providers.tf
+          cat <<EOF > backend.tf
           terraform {
             cloud {
               organization = "veloso"
