@@ -31,21 +31,34 @@ jobs:
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v3
 
-      - name: Inject Terraform Cloud Configuration
+      - name: Inject Terraform Azure Storage Backend Configuration
         run: |
           cat <<EOF > backend.tf
           terraform {
-            cloud {
-              organization = "veloso"
-              hostname     = "app.terraform.io"
-
-              workspaces {
-                project = "modules"
-                name    = "${{ needs.get_repo_name.outputs.sanitized_repo_name }}"
-              }
+            backend "azurerm" {
+              resource_group_name   = "testerg"
+              storage_account_name  = "stgtfstatetvsf"
+              container_name        = "cntf"
+              key                   = "terraform.tfstate"
             }
           }
           EOF
+
+      # - name: Inject Terraform Cloud Configuration
+      #   run: |
+      #     cat <<EOF > backend.tf
+      #     terraform {
+      #       cloud {
+      #         organization = "veloso"
+      #         hostname     = "app.terraform.io"
+
+      #         workspaces {
+      #           project = "modules"
+      #           name    = "${{ needs.get_repo_name.outputs.sanitized_repo_name }}"
+      #         }
+      #       }
+      #     }
+      #     EOF
 
       # - name: Commit backend.tf (if changed)
       #   run: |
