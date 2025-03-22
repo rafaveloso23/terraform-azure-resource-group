@@ -33,7 +33,7 @@ jobs:
         with:
           client-id: "5271f41f-e8ce-4cb2-aa1d-1eacae1d4eee"
           tenant-id: "0eed3ea8-f35c-4862-b14a-9809318064c7"
-          subscription-id: "0eed3ea8-f35c-4862-b14a-9809318064c7"
+          subscription-id: "cc323661-bdfb-4e37-8224-b9f41308d182"
 #az-rvs-dev
 
       - name: Install Terraform
