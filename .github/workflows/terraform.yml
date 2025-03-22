@@ -51,6 +51,7 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git pull --rebase origin ${{ github.head_ref }}  # Pull latest changes
           git add backend.tf
           git commit -m "Add backend.tf"
           git push origin HEAD:${{ github.head_ref }}
