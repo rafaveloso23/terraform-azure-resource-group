@@ -31,10 +31,10 @@ jobs:
 
       - uses: azure/login@v2
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-          # client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          # tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          # subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          client-id: "5271f41f-e8ce-4cb2-aa1d-1eacae1d4eee"
+          tenant-id: "0eed3ea8-f35c-4862-b14a-9809318064c7"
+          subscription-id: "0eed3ea8-f35c-4862-b14a-9809318064c7"
+#az-rvs-dev
 
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v3
