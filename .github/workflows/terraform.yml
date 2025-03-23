@@ -68,27 +68,6 @@ jobs:
       #     }
       #     EOF
 
-      # - name: Commit backend.tf (if changed)
-      #   run: |
-      #     git config --global user.name "github-actions[bot]"
-      #     git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
-      #     # Ensure the branch is up to date
-      #     git fetch origin
-      #     git checkout ${{ github.head_ref }}
-
-      #     # Check if backend.tf already exists and has the same content
-      #     if [ -f backend.tf ]; then
-      #       if git diff --quiet origin/${{ github.head_ref }} -- backend.tf; then
-      #         echo "backend.tf is unchanged. Skipping commit."
-      #         exit 0
-      #       fi
-      #     fi
-
-      #     git add backend.tf
-      #     git commit -m "Add backend.tf"
-      #     git push origin HEAD:${{ github.head_ref }}
-
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
