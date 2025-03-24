@@ -106,7 +106,7 @@ jobs:
           # Make executable and run
           chmod +x migrate.exp
           ./migrate.exp
-          ls -la
+          terraform plan
       
       - name: Plan Terraform
         run: terraform plan
