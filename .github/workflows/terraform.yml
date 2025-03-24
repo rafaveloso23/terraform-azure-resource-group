@@ -84,9 +84,19 @@ jobs:
         with:
           cli_config_credentials_token: ${{ secrets.TF_API_TEAM_TOKEN }}          
 
-      - name: Initialize Terraform Cloud with Script
+      - name: Create script init
         run: |
-          script -q -c "terraform init" /dev/null <<< "yes"
+          cat <<EOF > init-terraform.sh
+          #!/bin/bash
+
+          echo "yes" | terraform init
+          EOF
+
+      - name: Make init script executable
+        run: chmod +x init-terraform.sh
+
+      - name: Run Terraform init script
+        run: ./init-terraform.sh
 
       - name: Plan Terraform
         run: terraform plan
