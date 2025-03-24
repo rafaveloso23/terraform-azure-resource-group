@@ -84,8 +84,18 @@ jobs:
         with:
           cli_config_credentials_token: ${{ secrets.TF_API_TEAM_TOKEN }}          
 
-      - name: Run Terraform init 
-        run: terraform init
+      - name: create init file
+        run: |
+          cat <<EOF 
+          #!/bin/bash
+          echo "yes" | terraform init
+          EOF > init.sh
+        shell: bash
+
+      - name: Run init.sh
+        run: |
+          chmod +x init.sh
+          ./init.sh
 
       - name: Plan Terraform
         run: terraform plan
