@@ -84,10 +84,9 @@ jobs:
         with:
           cli_config_credentials_token: ${{ secrets.TF_API_TEAM_TOKEN }}          
 
-      - name: create init file
-        run: terraform init
-        env:
-         TF_IN_AUTOMATION: "true"
+      - name: Init with forced yes
+        run: |
+          (sleep 1; echo "yes") | terraform init
       
       - name: Plan Terraform
         run: terraform plan
