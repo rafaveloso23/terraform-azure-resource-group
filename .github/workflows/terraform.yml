@@ -86,7 +86,7 @@ jobs:
 
       - name: Initialize Terraform Cloud
         run: | 
-          yes | terraform init
+          printf "yes\n" | terraform init
           
       - name: Plan Terraform
 
