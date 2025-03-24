@@ -86,10 +86,10 @@ jobs:
 
       - name: create init file
         run: |
-          cat <<EOF 
+          cat <<EOF > init.sh
           #!/bin/bash
-          yes "yes" | terraform init
-          EOF > init.sh
+          terraform init | tee /tmp/terraform_init.log | grep -q "Should Terraform migrate your existing state?" && echo "yes" | terraform init
+          EOF
         shell: bash
 
       - name: Run init.sh
