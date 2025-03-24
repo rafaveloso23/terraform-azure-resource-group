@@ -85,7 +85,7 @@ jobs:
           cli_config_credentials_token: ${{ secrets.TF_API_TEAM_TOKEN }}          
 
       - name: Initialize Terraform Cloud
-        run: yes | terraform init
+        run: terraform init -migrate-state -force-copy
           
       - name: Plan Terraform
 
