@@ -84,9 +84,14 @@ jobs:
         with:
           cli_config_credentials_token: ${{ secrets.TF_API_TEAM_TOKEN }}          
 
-      - name: Initialize Terraform Cloud
-        run: | 
-          printf "yes\n" | terraform init
+      - name: Initialize Terraform Cloud with Expect
+        run: |
+          sudo apt-get update && sudo apt-get install -y expect
+          expect -c '
+          spawn terraform init
+          expect "Should Terraform migrate your existing state?"
+          send "yes\n"
+          expect eof'
           
       - name: Plan Terraform
 
