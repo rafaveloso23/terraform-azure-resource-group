@@ -84,9 +84,16 @@ jobs:
         with:
           cli_config_credentials_token: ${{ secrets.TF_API_TEAM_TOKEN }}          
 
-      - name: Init with forced yes
+      - name: Initialize Terraform with guaranteed response
         run: |
-          (sleep 1; echo "yes") | terraform init
+          (
+            sleep 2  # Wait for all initialization to complete
+            echo "yes"  # Answer the migration prompt
+            sleep 1  # Allow time for processing
+            if [ -n "$state_exists" ]; then
+              echo "yes"  # Second answer if needed
+            fi
+          ) | terraform init
       
       - name: Plan Terraform
         run: terraform plan
