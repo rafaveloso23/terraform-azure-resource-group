@@ -61,13 +61,12 @@ jobs:
           fi
 
       - name: Initialize Terraform
-        if: env.state_exists == 'true'
         run: terraform init
 
       - name: Plan Terraform
-        if: env.state_exists == 'true'
+
         run: terraform plan
 
       - name: Apply Terraform
-        if: env.state_exists == 'true'
+
         run: terraform apply -auto-approve
