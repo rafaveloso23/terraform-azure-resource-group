@@ -86,7 +86,7 @@ jobs:
 
       - name: Initialize Terraform Cloud
         run: | 
-          echo "yes" | terraform init
+          yes | terraform init
           
       - name: Plan Terraform
 
