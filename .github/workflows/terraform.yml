@@ -88,7 +88,7 @@ jobs:
         run: |
           cat <<EOF 
           #!/bin/bash
-          echo "yes" | terraform init
+          yes "yes" | terraform init
           EOF > init.sh
         shell: bash
 
