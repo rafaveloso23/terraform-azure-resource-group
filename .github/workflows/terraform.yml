@@ -92,11 +92,12 @@ jobs:
           expect "Should Terraform migrate your existing state?"
           send "yes\n"
           expect eof'
-          
-      - name: Plan Terraform
 
+      - name: Init Terraform
+        run: terraform init
+
+      - name: Plan Terraform
         run: terraform plan
 
       - name: Apply Terraform
-
         run: terraform apply -auto-approve
