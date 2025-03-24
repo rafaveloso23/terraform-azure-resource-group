@@ -84,29 +84,9 @@ jobs:
         with:
           cli_config_credentials_token: ${{ secrets.TF_API_TEAM_TOKEN }}          
 
-      - name: Migrate Terraform backend with expect
+      - name: Initialize Terraform with forced "yes"
         run: |
-          # Install expect (available in GitHub Actions Ubuntu runners)
-          sudo apt-get update && sudo apt-get install -y expect
-          
-          # Create expect script
-          cat << 'EOF' > migrate.exp
-          #!/usr/bin/expect -f
-          set timeout 30
-          spawn terraform init
-          expect {
-            "Should Terraform migrate your existing state?" {
-              send "yes\r"
-              exp_continue
-            }
-            eof
-          }
-          EOF
-          
-          # Make executable and run
-          chmod +x migrate.exp
-          ./migrate.exp
-          terraform plan
+          printf "yes\nyes\n" | terraform init
       
       - name: Plan Terraform
         run: terraform plan
