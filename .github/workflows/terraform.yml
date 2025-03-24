@@ -85,7 +85,7 @@ jobs:
           cli_config_credentials_token: ${{ secrets.TF_API_TEAM_TOKEN }}          
 
       - name: Run Terraform init 
-        run: echo "yes" | TF_INPUT="false" terraform init
+        run: terraform init | yes
 
       - name: Plan Terraform
         run: terraform plan
