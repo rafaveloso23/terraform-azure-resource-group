@@ -22,7 +22,7 @@ jobs:
           echo "sanitized_repo_name=$SANITIZED_NAME" >> "$GITHUB_OUTPUT"
 
   terraform_hcp:
-    if: ${{ github.event.inputs.use_terraform_hcp == 'true' }}  # ⬅️ Run only if using Terraform HCP
+    if: ${{ github.event.inputs.use_terraform_hcp == 'false' }}  # ⬅️ Run only if using Terraform HCP
     runs-on: ubuntu-latest
     needs: get_repo_name
     steps:
