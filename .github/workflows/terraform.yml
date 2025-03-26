@@ -86,7 +86,7 @@ jobs:
 
       - name: Initialize Terraform with forced "yes"
         run: |
-          printf "yes\nyes\n" | terraform init
+          printf "yes\nyes\n" | terraform init -input=false
       
       - name: Plan Terraform
         run: terraform plan
