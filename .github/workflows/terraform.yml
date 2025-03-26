@@ -1,3 +1,4 @@
+
 name: Terraform API Request
 
 on:
@@ -7,6 +8,7 @@ on:
 
 permissions:
   contents: write
+  id-token: write
 
 jobs:
   get_repo_name:
@@ -20,42 +22,72 @@ jobs:
           REPO_NAME="${GITHUB_REPOSITORY#*/}"
           SANITIZED_NAME=$(echo "$REPO_NAME" | tr '.' '-')
           echo "sanitized_repo_name=$SANITIZED_NAME" >> "$GITHUB_OUTPUT"
-
   terraform_hcp:
-    if: ${{ github.event.inputs.use_terraform_hcp == 'true' }}  # ⬅️ Run only if using Terraform HCP
     runs-on: ubuntu-latest
     needs: get_repo_name
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - uses: azure/login@v2
+        with:
+          client-id: "5271f41f-e8ce-4cb2-aa1d-1eacae1d4eee"
+          tenant-id: "0eed3ea8-f35c-4862-b14a-9809318064c7"
+          subscription-id: "cc323661-bdfb-4e37-8224-b9f41308d182"
+
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v3
 
-      - name: Inject Terraform Cloud Configuration
+      - name: Inject Terraform Azure Storage Backend Configuration
+        run: |
+          cat <<EOF > backend.tf
+          terraform {
+            backend "azurerm" {
+              resource_group_name   = "testerg"
+              storage_account_name  = "stgtfstatetvsf"
+              container_name        = "cntf"
+              key                   = "terraform.tfstate"
+            }
+          }
+          EOF
+      - name: Check if Terraform state file exists
+        id: check_state
+        run: |
+          if az storage blob exists --account-name stgtfstatetvsf --container-name cntf --name terraform.tfstate --auth-mode login | grep -q '"exists": true'; then
+            echo "state_exists=true" >> "$GITHUB_ENV"
+          else
+            echo "state_exists=false" >> "$GITHUB_ENV"
+          fi
+      - name: Initialize Terraform
+        run: terraform init
+
+      - name: Inject Terraform Cloud Backend Configuration
         run: |
           cat <<EOF > backend.tf
           terraform {
             cloud {
               organization = "veloso"
               hostname     = "app.terraform.io"
-
+          
               workspaces {
                 project = "modules"
-                name    = "${{ needs.get_repo_name.outputs.sanitized_repo_name }}"
+                name    = "terraform-azure-resource-group"
               }
             }
           }
           EOF
-
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v3
         with:
-          cli_config_credentials_token: ${{ secrets.TF_API_TEAM_TOKEN }}
+          terraform_wrapper: false
+          cli_config_credentials_token: ${{ secrets.TF_API_TEAM_TOKEN }}          
 
-      - name: Initialize Terraform
-        run: terraform init
-
+      - name: Initialize Terraform with forced "yes"
+        run: |
+          printf "yes\nyes\n" | terraform init -input=false
+      
       - name: Plan Terraform
         run: terraform plan
 
+      - name: Apply Terraform
+        run: terraform apply -auto-approve
