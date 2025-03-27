@@ -50,41 +50,41 @@ jobs:
             }
           }
           EOF
-      - name: Check if Terraform state file exists
-        id: check_state
-        run: |
-          if az storage blob exists --account-name stgtfstatetvsf --container-name cntf --name terraform.tfstate --auth-mode login | grep -q '"exists": true'; then
-            echo "state_exists=true" >> "$GITHUB_ENV"
-          else
-            echo "state_exists=false" >> "$GITHUB_ENV"
-          fi
+      # - name: Check if Terraform state file exists
+      #   id: check_state
+      #   run: |
+      #     if az storage blob exists --account-name stgtfstatetvsf --container-name cntf --name terraform.tfstate --auth-mode login | grep -q '"exists": true'; then
+      #       echo "state_exists=true" >> "$GITHUB_ENV"
+      #     else
+      #       echo "state_exists=false" >> "$GITHUB_ENV"
+      #     fi
       - name: Initialize Terraform
         run: terraform init
 
-      - name: Inject Terraform Cloud Backend Configuration
-        run: |
-          cat <<EOF > backend.tf
-          terraform {
-            cloud {
-              organization = "veloso"
-              hostname     = "app.terraform.io"
+      # - name: Inject Terraform Cloud Backend Configuration
+      #   run: |
+      #     cat <<EOF > backend.tf
+      #     terraform {
+      #       cloud {
+      #         organization = "veloso"
+      #         hostname     = "app.terraform.io"
           
-              workspaces {
-                project = "modules"
-                name    = "terraform-azure-resource-group"
-              }
-            }
-          }
-          EOF
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_wrapper: false
-          cli_config_credentials_token: ${{ secrets.TF_API_TEAM_TOKEN }}          
+      #         workspaces {
+      #           project = "modules"
+      #           name    = "terraform-azure-resource-group"
+      #         }
+      #       }
+      #     }
+      # #     EOF
+      # - name: Setup Terraform
+      #   uses: hashicorp/setup-terraform@v3
+      #   with:
+      #     terraform_wrapper: false
+      #     cli_config_credentials_token: ${{ secrets.TF_API_TEAM_TOKEN }}          
 
-      - name: Initialize Terraform with forced "yes"
-        run: |
-          printf "yes\nyes\n" | terraform init -input=false
+      # - name: Initialize Terraform with forced "yes"
+      #   run: |
+      #     printf "yes\nyes\n" | terraform init -input=false
       
       - name: Plan Terraform
         run: terraform plan
