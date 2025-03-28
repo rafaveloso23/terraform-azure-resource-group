@@ -39,7 +39,7 @@ jobs:
           SELECTED_AGENT=$(echo "$AGENTS_JSON" | jq -r --arg env "$ENV_NAME" '.agents[$env]')
           echo "SELECTED_AGENT=$SELECTED_AGENT" >> "$GITHUB_ENV"
 
-      - name: Use Agent Selecionado
+      - name: Print Agent Selecionado
         run: |
           echo "Selected Agent: $SELECTED_AGENT"
 
@@ -52,7 +52,7 @@ jobs:
                 "attributes": {
                   "name": "workspace-1",
                   "execution-mode": "agent",
-                  "agent-pool-id": $SELECTED_AGENT
+                  "agent-pool-id": $agentPoolId
                 },
                 "type": "workspaces"
               }
