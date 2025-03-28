@@ -23,7 +23,7 @@ jobs:
           SANITIZED_NAME=$(echo "$REPO_NAME" | tr '.' '-')
           echo "sanitized_repo_name=$SANITIZED_NAME" >> "$GITHUB_OUTPUT"
 
-      - name: Define Agents Map
+      - name: Definição de Agents
         run: |
           echo "AGENTS_JSON=$(jq -c '.agents = {
             "dev": "apool-agehneklrfwe",
@@ -31,15 +31,15 @@ jobs:
             "prd": "apool-erfwerfwere"
           }' <<< '{}')" >> "$GITHUB_ENV"
 
-      - name: Set Target Environment
+      - name: Definição de ambiente
         run: echo "ENV_NAME=dev" >> "$GITHUB_ENV"
 
-      - name: Extract Agent Dynamically
+      - name: Agent Selecionado
         run: |
           SELECTED_AGENT=$(echo "$AGENTS_JSON" | jq -r --arg env "$ENV_NAME" '.agents[$env]')
           echo "SELECTED_AGENT=$SELECTED_AGENT" >> "$GITHUB_ENV"
 
-      - name: Use Selected Agent
+      - name: Use Agent Selecionado
         run: |
           echo "Selected Agent: $SELECTED_AGENT"
 
@@ -52,7 +52,7 @@ jobs:
                 "attributes": {
                   "name": "workspace-1",
                   "execution-mode": "agent",
-                  "agent-pool-id": $agentPoolId
+                  "agent-pool-id": $SELECTED_AGENT
                 },
                 "type": "workspaces"
               }
