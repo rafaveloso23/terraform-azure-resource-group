@@ -25,23 +25,24 @@ jobs:
 
       - name: Define Agents Map
         run: |
-          echo 'AGENTS_JSON={
+          echo "AGENTS_JSON=$(jq -c '.agents = {
             "dev": "apool-agehneklrfwe",
             "hom": "apool-wkerlmwlem",
             "prd": "apool-erfwerfwere"
-          }' >> "$GITHUB_ENV"
+          }' <<< '{}')" >> "$GITHUB_ENV"
 
       - name: Set Target Environment
         run: echo "ENV_NAME=dev" >> "$GITHUB_ENV"
 
       - name: Extract Agent Dynamically
         run: |
-          SELECTED_AGENT=$(echo "$AGENTS_JSON" | jq -r --arg env "$ENV_NAME" '.[$env]')
+          SELECTED_AGENT=$(echo "$AGENTS_JSON" | jq -r --arg env "$ENV_NAME" '.agents[$env]')
           echo "SELECTED_AGENT=$SELECTED_AGENT" >> "$GITHUB_ENV"
 
       - name: Use Selected Agent
         run: |
           echo "Selected Agent: $SELECTED_AGENT"
+
 
   terraform_hcp:
     runs-on: ubuntu-latest
