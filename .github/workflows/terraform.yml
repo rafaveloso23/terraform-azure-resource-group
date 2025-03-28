@@ -43,6 +43,26 @@ jobs:
         run: |
           echo "Selected Agent: $SELECTED_AGENT"
 
+      - name: Define JSON Payload
+        run: |
+          echo "WORKSPACE_JSON=$(jq -c --null-input \
+            --arg agentPoolId "$SELECTED_AGENT" \
+            '{
+              "data": {
+                "attributes": {
+                  "name": "workspace-1",
+                  "execution-mode": "agent",
+                  "agent-pool-id": $agentPoolId
+                },
+                "type": "workspaces"
+              }
+            }'
+          )" >> "$GITHUB_ENV"
+
+      - name: Print JSON Payload
+        run: echo "$WORKSPACE_JSON"
+
+
 
   terraform_hcp:
     runs-on: ubuntu-latest
