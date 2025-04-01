@@ -84,8 +84,8 @@ jobs:
                   "vcs-repo": {
                     "identifier": "rafaveloso23/'$WORKSPACE_NAME'", 
                     "oauth-token-id": "'$OAUTH_TOKEN_ID'",
-                    "tags-regex": "null",
-                    "branch": "${{ github.event.pull_request.head.ref }}"
+                    "tags-regex": "",
+                    "branch": "testerv"
                   }
                 },
                 "relationships": {
