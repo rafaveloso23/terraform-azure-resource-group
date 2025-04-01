@@ -1,6 +1,6 @@
 variable "resource_group_name" {
   type    = string
-  default = "rg-name-region"
+  default = "rg-testerfafa"
 }
 
 variable "location" {
