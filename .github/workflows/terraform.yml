@@ -82,7 +82,7 @@ jobs:
                   "queue-all-runs": true,
                   "working-directory": "",
                   "vcs-repo": {
-                    "identifier": "rafaveloso23/'$WORKSPACE_NAME'", 
+                    "identifier": "rafavesaloso23/'$WORKSPACE_NAME'", 
                     "oauth-token-id": "'$OAUTH_TOKEN_ID'",
                     "tags-regex": "",
                     "branch": "testerv"
