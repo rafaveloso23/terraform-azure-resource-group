@@ -110,7 +110,7 @@ jobs:
           fi
 
       - name: Echo Workspace Access URL
-        if: ${{ env.workspace_created == 'true' }}
+        if: ${{ env.workspace_created == 'true' || env.exists == 'true'   }}
         env:
           WORKSPACE_NAME: ${{ needs.get_repo_name.outputs.sanitized_repo_name }}
           ORGANIZATION_NAME: veloso
