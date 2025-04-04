@@ -62,8 +62,6 @@ jobs:
       - name: Print JSON Payload
         run: echo "$WORKSPACE_JSON"
 
-
-
   terraform_hcp:
     runs-on: ubuntu-latest
     needs: get_repo_name
