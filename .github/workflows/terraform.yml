@@ -81,28 +81,28 @@ jobs:
           terraform_wrapper: false
           cli_config_credentials_token: ${{ secrets.TF_API_TEAM_TOKEN }}
 
-      # - name: Inject Terraform Azure Storage Backend Configuration
-      #   run: |
-      #     cat <<EOF > backend.tf
-      #     terraform {
-      #       backend "azurerm" {
-      #         resource_group_name   = "testerg"
-      #         storage_account_name  = "stgtfstatetvsf"
-      #         container_name        = "cntf"
-      #         key                   = "terraform.tfstate"
-      #       }
-      #     }
-      #     EOF
-      # - name: Check if Terraform state file exists
-      #   id: check_state
-      #   run: |
-      #     if az storage blob exists --account-name stgtfstatetvsf --container-name cntf --name terraform.tfstate --auth-mode login | grep -q '"exists": true'; then
-      #       echo "state_exists=true" >> "$GITHUB_ENV"
-      #     else
-      #       echo "state_exists=false" >> "$GITHUB_ENV"
-      #     fi
-      # - name: Initialize Terraform
-      #   run: terraform init
+      - name: Inject Terraform Azure Storage Backend Configuration
+        run: |
+          cat <<EOF > backend.tf
+          terraform {
+            backend "azurerm" {
+              resource_group_name   = "testerg"
+              storage_account_name  = "stgtfstatetvsf"
+              container_name        = "cntf"
+              key                   = "terraform.tfstate"
+            }
+          }
+          EOF
+      - name: Check if Terraform state file exists
+        id: check_state
+        run: |
+          if az storage blob exists --account-name stgtfstatetvsf --container-name cntf --name terraform.tfstate --auth-mode login | grep -q '"exists": true'; then
+            echo "state_exists=true" >> "$GITHUB_ENV"
+          else
+            echo "state_exists=false" >> "$GITHUB_ENV"
+          fi
+      - name: Initialize Terraform
+        run: terraform init
 
       - name: Inject Terraform Cloud Backend Configuration
         run: |
