@@ -102,6 +102,9 @@ jobs:
       - name: Initialize Terraform
         run: terraform init
 
+      - name: terraform apply
+        run: terraform apply -auto-approve
+
       - name: Inject Terraform Cloud Backend Configuration
         run: |
           cat <<EOF > backend.tf
