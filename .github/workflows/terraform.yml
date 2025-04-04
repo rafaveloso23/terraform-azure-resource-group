@@ -31,7 +31,7 @@ jobs:
         run: terraform validate
 
       - name: Terraform Plan
-        run: terraform plan -input=false -var-file=your.tfvars
+        run: terraform plan -input=false -var-file=terraform.tfvars
 
       - name: Extract and Sanitize Repository Name
         id: sanitize_repo
