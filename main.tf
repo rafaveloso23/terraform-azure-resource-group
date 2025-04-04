@@ -4,7 +4,7 @@ resource "azurerm_resource_group" "rg" {
   tags     = var.tags
 }
 
-
+##
 resource "azurerm_storage_account" "name" {
   name                     = "rgfrrrewr"
   resource_group_name      = azurerm_resource_group.rg.name
