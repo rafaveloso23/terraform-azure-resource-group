@@ -29,10 +29,8 @@ jobs:
       - name: Terraform Validate
         run: terraform validate
 
-      - name: Terraform Plan
-        run: terraform plan -input=false -var-file=terraform.tfvars
-        
   get_repo_name:
+    needs: gates-validation
     runs-on: ubuntu-latest
     outputs:
       sanitized_repo_name: ${{ steps.sanitize_repo.outputs.sanitized_repo_name }}
