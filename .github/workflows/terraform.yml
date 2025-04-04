@@ -101,8 +101,8 @@ jobs:
       #     else
       #       echo "state_exists=false" >> "$GITHUB_ENV"
       #     fi
-      - name: Initialize Terraform
-        run: terraform init
+      # - name: Initialize Terraform
+      #   run: terraform init
 
       - name: Inject Terraform Cloud Backend Configuration
         run: |
@@ -125,9 +125,8 @@ jobs:
           terraform_wrapper: false
           cli_config_credentials_token: ${{ secrets.TF_API_TEAM_TOKEN }}          
 
-      # - name: Initialize Terraform with forced "yes"
-      #   run: |
-      #     printf "yes\nyes\n" | terraform init -input=false
+      - name: Initialize Terraform with forced "yes"
+        run: terraform init
       
       - name: Plan Terraform
         run: terraform plan
