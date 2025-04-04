@@ -4,4 +4,5 @@ tags = {
   environment = "dev"
   costcenter  = "it"
 }
-stg_name = "ewrgewetgw"
+stg_name      = "ewrgewetgw"
+client_secret = "wwefwerfwe"

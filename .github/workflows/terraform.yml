@@ -9,10 +9,9 @@ permissions:
   contents: write
 
 jobs:
-  get_repo_name:
+
+  gates-validation:
     runs-on: ubuntu-latest
-    outputs:
-      sanitized_repo_name: ${{ steps.sanitize_repo.outputs.sanitized_repo_name }}
     steps:
       - uses: actions/checkout@v4
 
@@ -32,7 +31,12 @@ jobs:
 
       - name: Terraform Plan
         run: terraform plan -input=false -var-file=terraform.tfvars
-
+        
+  get_repo_name:
+    runs-on: ubuntu-latest
+    outputs:
+      sanitized_repo_name: ${{ steps.sanitize_repo.outputs.sanitized_repo_name }}
+    steps:
       - name: Extract and Sanitize Repository Name
         id: sanitize_repo
         run: |
