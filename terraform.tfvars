@@ -5,4 +5,4 @@ tags = {
   costcenter  = "it"
 }
 stg_name      = "ewrgewetgw"
-client_secret = "wwefwerfwe"
+# client_secret = "wwefwerfwe"
