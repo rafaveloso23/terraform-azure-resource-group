@@ -1,5 +1,5 @@
 resource_group_name = "rgfrrrewr"
-location = "East US"
+location            = "East US"
 tags = {
   environment = "dev"
   costcenter  = "it"
