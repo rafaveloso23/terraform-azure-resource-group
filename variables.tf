@@ -1,21 +1,19 @@
 variable "resource_group_name" {
-  type    = string
-  default = "rg-name-region"
+  type = string
 }
 
 variable "location" {
-  type    = string
-  default = "East US"
+  type = string
 }
 
 variable "tags" {
   type = map(string)
-  default = {
-    environment = "dev"
-    costcenter  = "it"
-  }
 }
 
-variable "client_secret" {
+# variable "client_secret" {
+#   type = string
+# }
+
+variable "stg_name" {
   type = string
 }
