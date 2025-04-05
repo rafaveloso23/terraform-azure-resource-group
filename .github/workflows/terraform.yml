@@ -69,17 +69,19 @@ jobs:
       - name: Check if workspace exists
         id: check_workspace
         run: |
-          WORKSPACE_NAME="workspace-1"
           WORKSPACE_ID=$(curl -s -X GET "https://app.terraform.io/api/v2/organizations/veloso/workspaces/terraform-azure-resource-group" \
             -H "Authorization: Bearer ${{ secrets.TF_API_TEAM_TOKEN }}" \
             -H "Content-Type: application/vnd.api+json" | jq -r '.data.id')
 
           if [ "$WORKSPACE_ID" != "null" ]; then
             echo "workspace_exists=true" >> "$GITHUB_ENV"
+            workspace_exists=true
           else
             echo "workspace_exists=false" >> "$GITHUB_ENV"
+            workspace_exists=false
           fi
-          echo "Workspace exists: ${{ env.workspace_exists }}"
+
+          echo "Workspace exists: $workspace_exists"
 
 
   terraform_hcp:
