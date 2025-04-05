@@ -131,8 +131,8 @@ jobs:
         run: printf 'yes\nyes\n' | terraform init
 
       #
-      # - name: Plan Terraform
-      #   run: terraform plan
+      - name: Plan Terraform
+        run: terraform plan
 
       # - name: Apply Terraform
       #   run: terraform apply -auto-approve
