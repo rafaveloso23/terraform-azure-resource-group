@@ -186,15 +186,27 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-
-      - name: Install Terraform
-        uses: hashicorp/setup-terraform@v3
+      - name: Inject Terraform Cloud Backend Configuration
+        run: |
+          cat <<EOF > backend.tf
+          terraform {
+            cloud {
+              organization = "veloso"
+              hostname     = "app.terraform.io"
+          
+              workspaces {
+                project = "modules"
+                name    = "terraform-azure-resource-group"
+              }
+            }
+          }
+          EOF
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_wrapper: false
-          cli_config_credentials_token: ${{ secrets.TF_API_TEAM_TOKEN }}          
+          cli_config_credentials_token: ${{ secrets.TF_API_TEAM_TOKEN }} 
 
       - name: Initialize Terraform with forced "yes"
         run: |
