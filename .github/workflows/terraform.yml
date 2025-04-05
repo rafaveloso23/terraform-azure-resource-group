@@ -84,7 +84,7 @@ jobs:
             echo "workspace_exists=false" >> "$GITHUB_OUTPUT"
           fi
 
-          echo "Workspace exists: $workspace_exists"
+          echo "Workspace exists: ${{ env.workspace_exists }}"
       
       - uses: azure/login@v2
         with:
@@ -103,9 +103,12 @@ jobs:
             echo "state_exists=false" >> "$GITHUB_OUTPUT"
           fi
 
-          echo "State Azure exists: $state_exists"
+          echo "State Azure exists: ${{ env.state_exists }}"
 
-  Migrate_Flow: 
+  Migrate_Flow:
+    outputs:
+      workspace_exists: ${{ steps.check_workspace.outputs.workspace_exists }}
+      state_exists: ${{ steps.check_state.outputs.state_exists }}
     runs-on: ubuntu-latest
     needs: [get_repo_name, check_existances]
     if: needs.check_existances.outputs.state_exists == 'true' && needs.check_existances.outputs.workspace_exists == 'false'
