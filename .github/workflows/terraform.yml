@@ -95,7 +95,7 @@ jobs:
       - name: Check if Terraform state file exists
         id: check_state
         run: |
-          if az storage blob exists --account-name stgtfstatetvsf --container-name cntf --name terraform.tfstate --auth-mode login | grep -q '"exists": true'; then
+          if az storage blob exists --account-name stgtfstatetvsf --container-name cntf --name terraforms.tfstate --auth-mode login | grep -q '"exists": true'; then
             echo "state_exists=true" >> "$GITHUB_ENV"
             echo "state_exists=true" >> "$GITHUB_OUTPUT"
           else
@@ -105,7 +105,7 @@ jobs:
 
           echo "State Azure exists: $state_exists"
 
-  Migrate_Flow:
+  Migrate_Flow: 
     runs-on: ubuntu-latest
     needs: [get_repo_name, check_existances]
     if: needs.check_existances.outputs.state_exists == 'true' && needs.check_existances.outputs.workspace_exists == 'false'
@@ -173,3 +173,34 @@ jobs:
           echo "║   🔄 Beginning state migration process...             ║"
           echo "╚════════════════════════════════════════════════════════╝" 
           printf 'yes\nyes\n' | terraform init
+
+  TFCloud_Flow:
+    runs-on: ubuntu-latest
+    needs: [get_repo_name, check_existances]
+    if: needs.check_existances.outputs.state_exists != 'true' && needs.check_existances.outputs.workspace_exists != 'false'
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false
+          cli_config_credentials_token: ${{ secrets.TF_API_TEAM_TOKEN }}          
+
+      - name: Initialize Terraform with forced "yes"
+        run: |
+          echo ""
+          echo "╔════════════════════════════════════════════════════════╗"
+          echo "║   🌐 Initializing New Terraform Cloud Environment     ║"
+          echo "╠════════════════════════════════════════════════════════╣"
+          echo "║   🧱 Workspace successfully created on TFC            ║"
+          echo "║   ☁️  Connected to Terraform Cloud backend            ║"
+          echo "║   ⚙️  Preparing for Terraform operations...            ║"
+          echo "╚════════════════════════════════════════════════════════╝"
+          echo ""
+          terraform init
