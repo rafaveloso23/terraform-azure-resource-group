@@ -12,7 +12,7 @@ provider "azurerm" {
 #     hostname     = "app.terraform.io" # Optional; defaults to app.terraform.io
 
 #     workspaces {
-#       project = "Default Project"
+#       project = "Default Proj ect"
 #       name    = "teste01"
 #     }
 #   }
