@@ -97,8 +97,10 @@ jobs:
         run: |
           if az storage blob exists --account-name stgtfstatetvsf --container-name cntf --name terraform.tfstate --auth-mode login | grep -q '"exists": true'; then
             echo "state_exists=true" >> "$GITHUB_ENV"
+            state_exists=true
           else
             echo "state_exists=false" >> "$GITHUB_ENV"
+            state_exists=false
           fi
 
           echo "State Azure exists: $state_exists"
