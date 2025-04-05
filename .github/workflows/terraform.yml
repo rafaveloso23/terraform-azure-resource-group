@@ -104,6 +104,12 @@ jobs:
           fi
 
           echo "State Azure exists: ${{ env.state_exists }}"
+      
+      - name: Print outputs
+        run: |
+            echo "Workspace Exists: ${{ steps.check_workspace.outputs.workspace_exists }}"
+            echo "State Exists: ${{ steps.check_state.outputs.state_exists }}"
+        
 
   Migrate_Flow:
     outputs:
