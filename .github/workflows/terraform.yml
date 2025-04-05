@@ -78,10 +78,10 @@ jobs:
 
           if [ "$WORKSPACE_ID" != "null" ]; then
             echo "workspace_exists=true" >> "$GITHUB_ENV"
-            workspace_exists=true
+            echo "workspace_exists=true" >> "$GITHUB_OUTPUT"
           else
             echo "workspace_exists=false" >> "$GITHUB_ENV"
-            workspace_exists=false
+            echo "workspace_exists=false" >> "$GITHUB_OUTPUT"
           fi
 
           echo "Workspace exists: $workspace_exists"
@@ -97,10 +97,10 @@ jobs:
         run: |
           if az storage blob exists --account-name stgtfstatetvsf --container-name cntf --name terraform.tfstate --auth-mode login | grep -q '"exists": true'; then
             echo "state_exists=true" >> "$GITHUB_ENV"
-            state_exists=true
+            echo "state_exists=true" >> "$GITHUB_OUTPUT"
           else
             echo "state_exists=false" >> "$GITHUB_ENV"
-            state_exists=false
+            echo "state_exists=false" >> "$GITHUB_OUTPUT"
           fi
 
           echo "State Azure exists: $state_exists"
