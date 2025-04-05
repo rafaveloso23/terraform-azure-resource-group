@@ -110,18 +110,6 @@ jobs:
     needs: [get_repo_name, check_existances]
     if: needs.check_existances.outputs.state_exists == 'true' && needs.check_existances.outputs.workspace_exists == 'false'
     steps:
-      - name: Output start migration message
-        run: |
-          echo ""
-          echo "╔════════════════════════════════════════════════════════╗"
-          echo "║   🚀 Starting Terraform State Migration to TFC...     ║"
-          echo "╠════════════════════════════════════════════════════════╣"
-          echo "║   📦 State found in Azure Storage                     ║"
-          echo "║   🔍 Workspace not found on Terraform Cloud           ║"
-          echo "║   🔄 Beginning state migration process...             ║"
-          echo "╚════════════════════════════════════════════════════════╝"
-          echo ""
-    
       - name: Checkout Repository
         uses: actions/checkout@v4
 
@@ -176,4 +164,12 @@ jobs:
           cli_config_credentials_token: ${{ secrets.TF_API_TEAM_TOKEN }}          
 
       - name: Initialize Terraform with forced "yes"
-        run: printf 'yes\nyes\n' | terraform init
+        run: |
+          echo "╔════════════════════════════════════════════════════════╗"
+          echo "║   🚀 Starting Terraform State Migration to TFC...     ║"
+          echo "╠════════════════════════════════════════════════════════╣"
+          echo "║   📦 State found in Azure Storage                     ║"
+          echo "║   🔍 Workspace not found on Terraform Cloud           ║"
+          echo "║   🔄 Beginning state migration process...             ║"
+          echo "╚════════════════════════════════════════════════════════╝" 
+          printf 'yes\nyes\n' | terraform init
