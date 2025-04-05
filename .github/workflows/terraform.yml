@@ -79,7 +79,7 @@ jobs:
           else
             echo "workspace_exists=false" >> "$GITHUB_ENV"
           fi
-          echo $workspace_exists
+          echo "Workspace exists: ${{ env.workspace_exists }}"
 
 
   terraform_hcp:
