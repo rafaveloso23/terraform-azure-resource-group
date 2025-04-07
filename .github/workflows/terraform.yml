@@ -164,7 +164,7 @@ jobs:
           terraform_wrapper: false
           cli_config_credentials_token: ${{ secrets.TF_API_TEAM_TOKEN }}          
 
-      - name: Initialize Terraform with forced "yes"
+      - name: Initialize Terraform Migration 🔄
         run: |
           echo "╔════════════════════════════════════════════════════════╗"
           echo "║   🚀 Starting Terraform State Migration to TFC...     ║"
@@ -208,7 +208,7 @@ jobs:
           terraform_wrapper: false
           cli_config_credentials_token: ${{ secrets.TF_API_TEAM_TOKEN }} 
 
-      - name: Initialize Terraform with forced "yes"
+      - name: Initialize Terraform Cloud ☁️
         run: |
           echo ""
           echo "╔════════════════════════════════════════════════════════╗"
