@@ -1,0 +1,15 @@
+      # - name: Inject Terraform Cloud Configuration
+      #   run: |
+      #     cat <<EOF > backend.tf
+      #     terraform {
+      #       cloud {
+      #         organization = "veloso"
+      #         hostname     = "app.terraform.io"
+
+      #         workspaces {
+      #           project = "modules"
+      #           name    = "${{ needs.get_repo_name.outputs.sanitized_repo_name }}"
+      #         }
+      #       }
+      #     }
+      #     EOF

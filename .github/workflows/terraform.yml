@@ -1,3 +1,4 @@
+
 name: Terraform API Request
 
 on:
@@ -7,6 +8,7 @@ on:
 
 permissions:
   contents: write
+  id-token: write
 
 jobs:
   get_repo_name:
@@ -21,41 +23,217 @@ jobs:
           SANITIZED_NAME=$(echo "$REPO_NAME" | tr '.' '-')
           echo "sanitized_repo_name=$SANITIZED_NAME" >> "$GITHUB_OUTPUT"
 
-  terraform_hcp:
-    if: ${{ github.event.inputs.use_terraform_hcp == 'true' }}  # ⬅️ Run only if using Terraform HCP
+      - name: Definição de Agents
+        run: |
+          echo "AGENTS_JSON=$(jq -c '.agents = {
+            "dev": "apool-agehneklrfwe",
+            "hom": "apool-wkerlmwlem",
+            "prd": "apool-erfwerfwere"
+          }' <<< '{}')" >> "$GITHUB_ENV"
+
+      - name: Definição de ambiente
+        run: echo "ENV_NAME=dev" >> "$GITHUB_ENV"
+
+      - name: Agent Selecionado
+        run: |
+          SELECTED_AGENT=$(echo "$AGENTS_JSON" | jq -r --arg env "$ENV_NAME" '.agents[$env]')
+          echo "SELECTED_AGENT=$SELECTED_AGENT" >> "$GITHUB_ENV"
+
+      - name: Print Agent Selecionado
+        run: |
+          echo "Selected Agent: $SELECTED_AGENT"
+
+      - name: Define JSON Payload
+        run: |
+          echo "WORKSPACE_JSON=$(jq -c --null-input \
+            --arg agentPoolId "$SELECTED_AGENT" \
+            '{
+              "data": {
+                "attributes": {
+                  "name": "workspace-1",
+                  "execution-mode": "agent",
+                  "agent-pool-id": $agentPoolId
+                },
+                "type": "workspaces"
+              }
+            }'
+          )" >> "$GITHUB_ENV"
+
+      - name: Print JSON Payload
+        run: echo "$WORKSPACE_JSON"
+
+  check_existances:
     runs-on: ubuntu-latest
     needs: get_repo_name
+    outputs:
+      workspace_exists: ${{ steps.check_workspace.outputs.workspace_exists }}
+      state_exists: ${{ steps.check_state.outputs.state_exists }}
+    steps:
+      - name: validate files requirements
+        run: |
+          FILES=("main.tf" "variables.tf" "outputs.tf")
+
+          for FILE in "${FILES[@]}"; do
+              if [[ -f "$FILE" ]]; then
+                  if [[ -s "$FILE" ]]; then
+                      echo "✅ The file '$FILE' exists and has content."
+                  else
+                      echo "⚠️ The file '$FILE' exists but is empty."
+                  fi
+              else
+                  echo "❌ The file '$FILE' does not exist."
+              fi
+          done
+
+
+      - name: Check if workspace exists
+        id: check_workspace
+        run: |
+          WORKSPACE_ID=$(curl -s -X GET "https://app.terraform.io/api/v2/organizations/veloso/workspaces/terraform-azure-resource-group" \
+            -H "Authorization: Bearer ${{ secrets.TF_API_TEAM_TOKEN }}" \
+            -H "Content-Type: application/vnd.api+json" | jq -r '.data.id')
+
+          if [ "$WORKSPACE_ID" != "null" ]; then
+            echo "workspace_exists=true" >> "$GITHUB_ENV"
+            echo "workspace_exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "workspace_exists=false" >> "$GITHUB_ENV"
+            echo "workspace_exists=false" >> "$GITHUB_OUTPUT"
+          fi
+      
+      - uses: azure/login@v2
+        with:
+            client-id: "5271f41f-e8ce-4cb2-aa1d-1eacae1d4eee"
+            tenant-id: "0eed3ea8-f35c-4862-b14a-9809318064c7"
+            subscription-id: "cc323661-bdfb-4e37-8224-b9f41308d182"
+            
+      - name: Check if Terraform state file exists
+        id: check_state
+        run: |
+          if az storage blob exists --account-name stgtfstatetvsf --container-name cntf --name terraform.tfstate --auth-mode login | grep -q '"exists": true'; then
+            echo "state_exists=true" >> "$GITHUB_ENV"
+            echo "state_exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "state_exists=false" >> "$GITHUB_ENV"
+            echo "state_exists=false" >> "$GITHUB_OUTPUT"
+          fi
+      
+      - name: Print outputs
+        run: |
+            echo "Workspace Exists: ${{ steps.check_workspace.outputs.workspace_exists }}"
+            echo "State Exists: ${{ steps.check_state.outputs.state_exists }}"
+        
+  Migrate_Flow:
+    runs-on: ubuntu-latest
+    needs: [get_repo_name, check_existances]
+    if: needs.check_existances.outputs.state_exists == 'true' && needs.check_existances.outputs.workspace_exists == 'false'
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - uses: azure/login@v2
+        with:
+          client-id: "5271f41f-e8ce-4cb2-aa1d-1eacae1d4eee"
+          tenant-id: "0eed3ea8-f35c-4862-b14a-9809318064c7"
+          subscription-id: "cc323661-bdfb-4e37-8224-b9f41308d182"
+
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v3
 
-      - name: Inject Terraform Cloud Configuration
+      - name: Inject Terraform Azure Storage Backend Configuration
+        run: |
+          cat <<EOF > backend.tf
+          terraform {
+            backend "azurerm" {
+              resource_group_name   = "testerg"
+              storage_account_name  = "stgtfstatetvsf"
+              container_name        = "cntf"
+              key                   = "terraform.tfstate"
+            }
+          }
+          EOF
+
+      - name: Initialize Terraform
+        run: terraform init
+
+      - name: terraform apply
+        run: terraform plan
+
+      - name: Inject Terraform Cloud Backend Configuration
         run: |
           cat <<EOF > backend.tf
           terraform {
             cloud {
               organization = "veloso"
               hostname     = "app.terraform.io"
-
+          
               workspaces {
                 project = "modules"
-                name    = "${{ needs.get_repo_name.outputs.sanitized_repo_name }}"
+                name    = "terraform-azure-resource-group"
               }
             }
           }
           EOF
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v3
         with:
-          cli_config_credentials_token: ${{ secrets.TF_API_TEAM_TOKEN }}
+          terraform_wrapper: false
+          cli_config_credentials_token: ${{ secrets.TF_API_TEAM_TOKEN }}          
 
-      - name: Initialize Terraform
-        run: terraform init
+      - name: Initialize Terraform Migration 🔄
+        run: |
+          echo "╔════════════════════════════════════════════════════════╗"
+          echo "║   🚀 Starting Terraform State Migration to TFC...     ║"
+          echo "╠════════════════════════════════════════════════════════╣"
+          echo "║   📦 State found in Azure Storage                     ║"
+          echo "║   🔍 Workspace not found on Terraform Cloud           ║"
+          echo "║   🔄 Beginning state migration process...             ║"
+          echo "╚════════════════════════════════════════════════════════╝" 
+          printf 'yes\nyes\n' | terraform init
 
-      - name: Plan Terraform
-        run: terraform plan
+  TFCloud_Flow:
+    runs-on: ubuntu-latest
+    needs: [get_repo_name, check_existances]
+    if: |
+        needs.check_existances.outputs.state_exists == 'false' && needs.check_existances.outputs.workspace_exists == 'true' ||
+        needs.check_existances.outputs.state_exists == 'false' && needs.check_existances.outputs.workspace_exists == 'false' ||
+        needs.check_existances.outputs.state_exists == 'true' && needs.check_existances.outputs.workspace_exists == 'true'
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
+      - name: Inject Terraform Cloud Backend Configuration
+        run: |
+          cat <<EOF > backend.tf
+          terraform {
+            cloud {
+              organization = "veloso"
+              hostname     = "app.terraform.io"
+          
+              workspaces {
+                project = "modules"
+                name    = "terraform-azure-resource-group"
+              }
+            }
+          }
+          EOF
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false
+          cli_config_credentials_token: ${{ secrets.TF_API_TEAM_TOKEN }} 
+
+      - name: Initialize Terraform Cloud ☁️
+        run: |
+          echo ""
+          echo "╔════════════════════════════════════════════════════════╗"
+          echo "║   🌐 Initializing New Terraform Cloud Environment     ║"
+          echo "╠════════════════════════════════════════════════════════╣"
+          echo "║   🧱 Workspace successfully created on TFC            ║"
+          echo "║   ☁️  Connected to Terraform Cloud backend            ║"
+          echo "║   ⚙️  Preparing for Terraform operations...            ║"
+          echo "╚════════════════════════════════════════════════════════╝"
+          echo ""
+          terraform init
