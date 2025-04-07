@@ -93,7 +93,7 @@ jobs:
       - name: Check if Terraform state file exists
         id: check_state
         run: |
-          if az storage blob exists --account-name stgtfstatetvsf --container-name cntf --name terraforms.tfstate --auth-mode login | grep -q '"exists": true'; then
+          if az storage blob exists --account-name stgtfstatetvsf --container-name cntf --name terraform.tfstate --auth-mode login | grep -q '"exists": true'; then
             echo "state_exists=true" >> "$GITHUB_ENV"
             echo "state_exists=true" >> "$GITHUB_OUTPUT"
           else
