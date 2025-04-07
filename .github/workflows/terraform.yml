@@ -69,6 +69,23 @@ jobs:
       workspace_exists: ${{ steps.check_workspace.outputs.workspace_exists }}
       state_exists: ${{ steps.check_state.outputs.state_exists }}
     steps:
+      - name: validate files requirements
+        run: |
+          FILES=("main.tf" "variables.tf" "outputs.tf")
+
+          for FILE in "${FILES[@]}"; do
+              if [[ -f "$FILE" ]]; then
+                  if [[ -s "$FILE" ]]; then
+                      echo "✅ The file '$FILE' exists and has content."
+                  else
+                      echo "⚠️ The file '$FILE' exists but is empty."
+                  fi
+              else
+                  echo "❌ The file '$FILE' does not exist."
+              fi
+          done
+
+
       - name: Check if workspace exists
         id: check_workspace
         run: |
