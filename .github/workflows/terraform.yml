@@ -40,6 +40,7 @@ jobs:
                   "name": "'"$WORKSPACE_NAME"'",  
                   "terraform_version": "1.6.0",
                   "file-triggers-enabled": false,
+                  "queue-all-runs": true,
                   "working-directory": "",
                   "vcs-repo": {
                     "identifier": "rafaveloso23/'"$WORKSPACE_NAME"'", 
