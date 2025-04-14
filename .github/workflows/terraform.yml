@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - main
+      - develop
 
 jobs:
   get-repo-name:
@@ -43,7 +44,8 @@ jobs:
                   "vcs-repo": {
                     "identifier": "rafaveloso23/'"$WORKSPACE_NAME"'", 
                     "oauth-token-id": "'"$OAUTH_TOKEN"'",
-                    "tags-regex": "\\d+\\.\\d+\\.\\d+"
+                    "tags-regex": "",
+                    "branch": "develop"
                   }
                 },
                 "relationships": {
