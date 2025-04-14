@@ -44,7 +44,7 @@ jobs:
                   "working-directory": "",
                   "vcs-repo": {
                     "identifier": "rafaveloso23/'"$WORKSPACE_NAME"'", 
-                    "oauth-token-id": "'"$OAUTH_TOKEN"'",
+                    "oauth-token-id": "ot-wA35FqioPs6EfhUi",
                     "tags-regex": "",
                     "branch": "develop"
                   }
