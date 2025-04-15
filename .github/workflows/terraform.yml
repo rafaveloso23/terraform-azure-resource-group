@@ -39,7 +39,7 @@ jobs:
                   "name": "'"$WORKSPACE_NAME"'",  
                   "terraform_version": "1.6.0",
                   "file-triggers-enabled": true,
-                  "trigger-patterns": ["/*.tf"],
+                  "trigger-patterns": ["./rg/*.tf"],
                   "queue-all-runs": true,
                   "auto-apply": false,
                   "speculative-enabled": false,
