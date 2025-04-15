@@ -3,7 +3,6 @@ name: Terraform API Request
 on:
   pull_request:
     branches:
-      - main
       - develop
 
 jobs:
