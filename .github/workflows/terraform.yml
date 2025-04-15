@@ -38,11 +38,12 @@ jobs:
                 "attributes": {
                   "name": "'"$WORKSPACE_NAME"'",  
                   "terraform_version": "1.6.0",
-                  "file-triggers-enabled": false,
+                  "file-triggers-enabled": true,
+                  "trigger-patterns": ["/*.tf,/*.tfvars"]
                   "queue-all-runs": true,
                   "auto-apply": false,
                   "speculative-enabled": false,
-                  "working-directory": "",
+                  "working-directory": "./",
                   "vcs-repo": {
                     "identifier": "rafaveloso23/'"$WORKSPACE_NAME"'", 
                     "oauth-token-id": "ot-wA35FqioPs6EfhUi",
