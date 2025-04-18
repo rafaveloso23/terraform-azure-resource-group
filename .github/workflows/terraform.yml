@@ -52,13 +52,10 @@ jobs:
         with:
           cli_config_credentials_token: ${{ secrets.TF_API_TEAM_TOKEN }}
 
-      - name: Initialize Terraform
-        run: terraform init > /dev/null 2>&1 || true
-
-      - name: remove providers file from modules
+      - name: Initialize Terraform and remove providers file
         run: |
+          terraform init > /dev/null 2>&1 || true
           TARGET="./.terraform/modules/resource-group/providers.tf"
-
           if [ -f "$TARGET" ]; then
             rm "$TARGET"
             echo "Deleted $TARGET"
@@ -66,6 +63,12 @@ jobs:
             echo "File not found: $TARGET"
           fi
 
+      - name: terraform init
+        run: terraform init
+
       - name: Plan Terraform
         run: terraform plan
+
+      - name: Apply Terraform
+        run: terraform apply -auto-approve
 
