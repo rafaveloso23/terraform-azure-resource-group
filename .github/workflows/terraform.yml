@@ -53,7 +53,7 @@ jobs:
           cli_config_credentials_token: ${{ secrets.TF_API_TEAM_TOKEN }}
 
       - name: Initialize Terraform
-        run: terraform init || true
+        run: terraform init > /dev/null 2>&1 || true
 
       - name: remove providers file from modules
         run: |
