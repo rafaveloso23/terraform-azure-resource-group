@@ -3,7 +3,6 @@ name: Terraform API Request
 on:
   pull_request:
     branches:
-      - main
       - develop
 
 jobs:
@@ -39,11 +38,12 @@ jobs:
                 "attributes": {
                   "name": "'"$WORKSPACE_NAME"'",  
                   "terraform_version": "1.6.0",
-                  "file-triggers-enabled": false,
-                  "working-directory": "",
+                  "queue-all-runs": true,
+                  "auto-apply": false,
+                  "speculative-enabled": false,
                   "vcs-repo": {
                     "identifier": "rafaveloso23/'"$WORKSPACE_NAME"'", 
-                    "oauth-token-id": "'"$OAUTH_TOKEN"'",
+                    "oauth-token-id": "ot-wA35FqioPs6EfhUi",
                     "tags-regex": "",
                     "branch": "develop"
                   }
