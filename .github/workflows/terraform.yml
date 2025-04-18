@@ -56,6 +56,17 @@ jobs:
       - name: Initialize Terraform
         run: terraform init
 
+      - name: remove providers file from modules
+        run: |
+          TARGET="./.terraform/modules/resource-group/providers.tf"
+
+          if [ -f "$TARGET" ]; then
+            rm "$TARGET"
+            echo "Deleted $TARGET"
+          else
+            echo "File not found: $TARGET"
+          fi
+          
       - name: Plan Terraform
         run: terraform plan
 
