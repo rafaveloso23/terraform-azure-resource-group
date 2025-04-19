@@ -8,9 +8,10 @@ module "resource-group" {
 
 module "storage" {
   source  = "app.terraform.io/veloso/storage/azure"
-  version = "1.0.0"
+  version = "1.0.1"
   rg_location = "East US"
-  rg_name     = "rg-teste01"
+  rg_name     = module.resource-group.resource_group_name
+  depends_on = [ module.resource-group ]
 }
 
 resource "azurerm_resource_group" "name" {
