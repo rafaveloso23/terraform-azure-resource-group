@@ -22,7 +22,6 @@ jobs:
           echo "sanitized_repo_name=$SANITIZED_NAME" >> "$GITHUB_OUTPUT"
 
   terraform_hcp:
-    if: ${{ github.event.inputs.use_terraform_hcp == 'true' }}  # ⬅️ Run only if using Terraform HCP
     runs-on: ubuntu-latest
     needs: get_repo_name
     steps:
@@ -53,9 +52,27 @@ jobs:
         with:
           cli_config_credentials_token: ${{ secrets.TF_API_TEAM_TOKEN }}
 
-      - name: Initialize Terraform
+      - name: Initialize Terraform and remove providers file
+        run: |
+          # Run terraform init quietly, continue even if it fails
+          terraform init -input=false -no-color > /dev/null 2>&1 || true
+
+          # Search for all providers.tf files inside .terraform/modules and delete them
+          echo "Searching for providers.tf files to delete..."
+
+          find .terraform/modules -type f -name "providers.tf" | while read -r file; do
+            rm -f "$file"
+            echo "Deleted $file"
+          done
+
+          echo "Done."
+
+      - name: terraform init
         run: terraform init
 
       - name: Plan Terraform
         run: terraform plan
+
+      - name: Apply Terraform
+        run: terraform apply -auto-approve
 
