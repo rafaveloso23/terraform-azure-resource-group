@@ -13,7 +13,7 @@ module "storage" {
   rg_name     = module.resource-group.resource_group_name
   depends_on = [ module.resource-group ]
 }
-
+##
 resource "azurerm_resource_group" "name" {
   name = "rg"
   location = "East US"
