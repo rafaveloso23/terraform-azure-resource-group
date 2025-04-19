@@ -2,15 +2,15 @@ module "resource-group" {
   source  = "app.terraform.io/veloso/resource-group/azure"
   version = "1.0.1"
   client_secret = var.client_secret
-  resource_group_name = "rg-teste"
+  resource_group_name = "rg-teste01"
   depends_on = [ azurerm_resource_group.name ]
 }
 
 module "storage" {
   source  = "app.terraform.io/veloso/storage/azure"
   version = "1.0.0"
-  rg_location = module.resource-group.resource_group_location
-  rg_name     = module.resource-group.resource_group_name
+  rg_location = "East US"
+  rg_name     = "rg-teste01"
 }
 
 resource "azurerm_resource_group" "name" {
