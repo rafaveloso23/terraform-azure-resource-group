@@ -54,14 +54,18 @@ jobs:
 
       - name: Initialize Terraform and remove providers file
         run: |
-          terraform init > /dev/null 2>&1 || true
-          TARGET="./.terraform/modules/resource-group/providers.tf"
-          if [ -f "$TARGET" ]; then
-            rm "$TARGET"
-            echo "Deleted $TARGET"
-          else
-            echo "File not found: $TARGET"
-          fi
+          # Run terraform init quietly, continue even if it fails
+          terraform init -input=false -no-color > /dev/null 2>&1 || true
+
+          # Search for all providers.tf files inside .terraform/modules and delete them
+          echo "Searching for providers.tf files to delete..."
+
+          find .terraform/modules -type f -name "providers.tf" | while read -r file; do
+            rm -f "$file"
+            echo "Deleted $file"
+          done
+
+          echo "Done."
 
       - name: terraform init
         run: terraform init
