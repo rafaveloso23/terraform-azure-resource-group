@@ -12,7 +12,6 @@ variable "client_secret" {
   type    = string
 }
 
-
 variable "tags" {
   type = map(string)
   default = {
@@ -20,10 +19,3 @@ variable "tags" {
     costcenter  = "it"
   }
 }
-###
-# variable "rg_data" {
-#   type = string
-# }
-# variable "client_secret" {
-#   type = string
-# }
