@@ -5,11 +5,8 @@ on:
     branches:
       - main
 
-permissions:
-  contents: write
-
 jobs:
-  get_repo_name:
+  get-repo-name:
     runs-on: ubuntu-latest
     outputs:
       sanitized_repo_name: ${{ steps.sanitize_repo.outputs.sanitized_repo_name }}
@@ -21,41 +18,43 @@ jobs:
           SANITIZED_NAME=$(echo "$REPO_NAME" | tr '.' '-')
           echo "sanitized_repo_name=$SANITIZED_NAME" >> "$GITHUB_OUTPUT"
 
-  terraform_hcp:
-    if: ${{ github.event.inputs.use_terraform_hcp == 'true' }}  # ⬅️ Run only if using Terraform HCP
+  api_request:
     runs-on: ubuntu-latest
-    needs: get_repo_name
+    needs: get-repo-name
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Install Terraform
-        uses: hashicorp/setup-terraform@v3
-
-      - name: Inject Terraform Cloud Configuration
+      - name: Make API Request
+        env:
+          TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
+          OAUTH_TOKEN: ${{ secrets.OAUTH_TOKEN }}
+          WORKSPACE_NAME: ${{ needs.get-repo-name.outputs.sanitized_repo_name }}
         run: |
-          cat <<EOF > backend.tf
-          terraform {
-            cloud {
-              organization = "veloso"
-              hostname     = "app.terraform.io"
-
-              workspaces {
-                project = "modules"
-                name    = "${{ needs.get_repo_name.outputs.sanitized_repo_name }}"
+          curl -X POST "https://app.terraform.io/api/v2/organizations/veloso/workspaces" \
+            -H "Authorization: Bearer $TF_API_TOKEN" \
+            -H "Accept: application/json" \
+            -H "Content-Type: application/vnd.api+json" \
+            -d '{
+              "data": {
+                "type": "workspaces",
+                "attributes": {
+                  "name": "'"$WORKSPACE_NAME"'",  
+                  "terraform_version": "1.6.0",
+                  "queue-all-runs": true,
+                  "auto-apply": false,
+                  "speculative-enabled": false,
+                  "vcs-repo": {
+                    "identifier": "rafaveloso23/'"$WORKSPACE_NAME"'", 
+                    "oauth-token-id": "ot-wA35FqioPs6EfhUi",
+                    "tags-regex": "",
+                    "branch": "main"
+                  }
+                },
+                "relationships": {
+                    "project": {
+                        "data": {
+                            "type": "projects",
+                            "id": "prj-Q9eBYAsfU5yYxbBF"
+                        }
+                    }
+                }
               }
-            }
-          }
-          EOF
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
-        with:
-          cli_config_credentials_token: ${{ secrets.TF_API_TEAM_TOKEN }}
-
-      - name: Initialize Terraform
-        run: terraform init
-
-      - name: Plan Terraform
-        run: terraform plan
-
+            }'
