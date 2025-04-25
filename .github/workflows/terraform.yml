@@ -39,8 +39,9 @@ jobs:
                   "name": "'"$WORKSPACE_NAME"'",  
                   "terraform_version": "1.6.0",
                   "queue-all-runs": true,
-                  "auto-apply": false,
-                  "speculative-enabled": false,
+                  "auto-apply": true,
+                  "working-directory": "",
+                  "speculative-enabled": true,
                   "vcs-repo": {
                     "identifier": "rafaveloso23/'"$WORKSPACE_NAME"'", 
                     "oauth-token-id": "ot-wA35FqioPs6EfhUi",
