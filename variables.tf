@@ -16,9 +16,6 @@ variable "tags" {
   }
 }
 
-variable "rg_data" {
-  type = string
-}
 # variable "client_secret" {
 #   type = string
 # }
