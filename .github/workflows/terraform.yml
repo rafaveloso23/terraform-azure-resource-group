@@ -66,20 +66,10 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - uses: azure/login@v2
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
         with:
-          client-id: "5271f41f-e8ce-4cb2-aa1d-1eacae1d4eee"
-          tenant-id: "0eed3ea8-f35c-4862-b14a-9809318064c7"
-          subscription-id: "cc323661-bdfb-4e37-8224-b9f41308d182"
-
-      - name: Install Terraform
-        uses: hashicorp/setup-terraform@v3
-
-      - name: Initialize Terraform
-        run: terraform init
-
-      - name: terraform apply
-        run: terraform plan
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
       - name: Inject Terraform Cloud Backend Configuration
         run: |
@@ -96,3 +86,9 @@ jobs:
             }
           }
           EOF
+
+      - name: Initialize Terraform
+        run: terraform init
+
+      - name: terraform apply
+        run: terraform plan
