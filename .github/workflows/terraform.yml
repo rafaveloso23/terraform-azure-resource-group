@@ -1,5 +1,4 @@
 name: Terraform API Request
-
 on:
   pull_request:
     branches:
@@ -39,8 +38,13 @@ jobs:
                   "name": "'"$WORKSPACE_NAME"'",  
                   "terraform_version": "1.6.0",
                   "queue-all-runs": true,
-                  "auto-apply": false,
-                  "speculative-enabled": false,
+                  "auto-apply-run-trigger": true,
+                  "auto-apply": true,
+                  "trigger-patterns": ["./*.tf"],
+                  "file-triggers-enabled": true,                 
+                  "working-directory": ".",
+                  "speculative-enabled": true,
+                  "structured-run-output-enabled": false,
                   "vcs-repo": {
                     "identifier": "rafaveloso23/'"$WORKSPACE_NAME"'", 
                     "oauth-token-id": "ot-wA35FqioPs6EfhUi",

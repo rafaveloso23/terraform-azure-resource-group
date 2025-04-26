@@ -1,7 +1,7 @@
-variable "resource_group_name" {
-  type    = string
-  default = "rg-name-region"
-}
+# variable "resource_group_name" {
+#   type    = string
+#   default = "rg-name-region"
+# }
 
 variable "location" {
   type    = string
