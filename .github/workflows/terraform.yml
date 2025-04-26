@@ -37,13 +37,13 @@ jobs:
                 "attributes": {
                   "name": "'"$WORKSPACE_NAME"'",  
                   "terraform_version": "1.6.0",
-                  "queue-all-runs": true,
-                  "auto-apply-run-trigger": true,
-                  "auto-apply": true,
+                  "queue-all-runs": false,
+                  "auto-apply-run-trigger": false,
+                  "auto-apply": false,
                   "trigger-patterns": ["./*.tf"],
                   "file-triggers-enabled": true,                 
                   "working-directory": ".",
-                  "speculative-enabled": true,
+                  "speculative-enabled": false,
                   "structured-run-output-enabled": false,
                   "vcs-repo": {
                     "identifier": "rafaveloso23/'"$WORKSPACE_NAME"'", 
@@ -62,3 +62,37 @@ jobs:
                 }
               }
             }'
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - uses: azure/login@v2
+        with:
+          client-id: "5271f41f-e8ce-4cb2-aa1d-1eacae1d4eee"
+          tenant-id: "0eed3ea8-f35c-4862-b14a-9809318064c7"
+          subscription-id: "cc323661-bdfb-4e37-8224-b9f41308d182"
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Initialize Terraform
+        run: terraform init
+
+      - name: terraform apply
+        run: terraform plan
+
+      - name: Inject Terraform Cloud Backend Configuration
+        run: |
+          cat <<EOF > backend.tf
+          terraform {
+            cloud {
+              organization = "veloso"
+              hostname     = "app.terraform.io"
+          
+              workspaces {
+                project = "modules"
+                name    = "terraform-azure-resource-group"
+              }
+            }
+          }
+          EOF
