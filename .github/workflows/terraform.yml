@@ -91,5 +91,5 @@ jobs:
       - name: Initialize Terraform
         run: terraform init
 
-      - name: terraform apply
+      - name: Terraform Plan
         run: terraform plan
