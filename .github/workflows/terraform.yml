@@ -128,11 +128,11 @@ jobs:
             -H "Content-Type: application/vnd.api+json")
 
             CV_ID=$(echo "$RESPONSE" | jq -r '.data[0].id')
-            echo "cv_id=$CV_ID" >> "$GITHUB_ENV"
+            echo "CV_ID=$CV_ID" >> "$GITHUB_ENV"
 
       - name: Read the value
         run: |
-          echo "CV ID: $cv_id"
+          echo "CV ID: $CV_ID"
 
       # - name: Create a Run
       #   env:
