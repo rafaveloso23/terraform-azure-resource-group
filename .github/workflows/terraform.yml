@@ -19,6 +19,8 @@ jobs:
 
   api_request:
     runs-on: ubuntu-latest
+    outputs:
+      workspace_id: ${{ steps.make_api_request.outputs.workspace_id }}
     needs: get-repo-name
     steps:
       - name: Make API Request
@@ -66,8 +68,11 @@ jobs:
 
             WORKSPACE_ID=$(echo "$RESPONSE" | jq -r '.data.id')
             echo "workspace_id=$WORKSPACE_ID" >> "$GITHUB_ENV"
+            echo "workspace_id=$WORKSPACE_ID" >> "$GITHUB_OUTPUT"
 
       - name: Read the value
+        env:
+          WORKSPACE_ID: ${{ steps.make_api_request.outputs.workspace_id }}
         run: |
           echo "Workspace ID: $WORKSPACE_ID"
 
