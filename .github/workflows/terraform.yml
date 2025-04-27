@@ -71,10 +71,8 @@ jobs:
             echo "workspace_id=$WORKSPACE_ID" >> "$GITHUB_OUTPUT"
 
       - name: Read the value
-        env:
-          WORKSPACE_ID: ${{ env.workspace_id }}
         run: |
-          echo "Workspace ID: $WORKSPACE_ID"
+          echo "Workspace ID: $workspace_id"
 
       - name: Checkout Repository
         uses: actions/checkout@v4
