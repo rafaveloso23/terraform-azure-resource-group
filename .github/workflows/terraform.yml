@@ -147,7 +147,7 @@ jobs:
           WORKSPACE_NAME: ${{ needs.get-repo-name.outputs.sanitized_repo_name }}
         run: |
             curl -X POST "https://app.terraform.io/api/v2/runs" \
-            -H "Authorization: Bearer $TF_API_TOKEN" \
+            -H "Authorization: Bearer $TF_API_TEAM_TOKEN" \
             -H "Accept: application/json" \
             -H "Content-Type: application/vnd.api+json" \
             -d '{
