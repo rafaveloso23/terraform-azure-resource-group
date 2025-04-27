@@ -122,7 +122,7 @@ jobs:
 
       - name: Get config version
         run: |
-            RESPONSE=$(curl -s -X GET "https://app.terraform.io/api/v2/workspaces/$workspace_id/configuration-versions" \
+            RESPONSE=$(curl -s -X GET "https://app.terraform.io/api/v2/workspaces/ws-7S6Tfv6djywXcdf3/configuration-versions" \
             -H "Authorization: Bearer $TF_API_TOKEN" \
             -H "Accept: application/json" \
             -H "Content-Type: application/vnd.api+json")
