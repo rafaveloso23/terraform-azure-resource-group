@@ -152,7 +152,7 @@ jobs:
             -d '{
               "data": {
               "attributes": {
-                "message": "Custom message for the run",
+                "message": "Custom message for the run"
               },
               "type": "runs",
               "relationships": {
