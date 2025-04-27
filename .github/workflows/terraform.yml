@@ -121,6 +121,11 @@ jobs:
         run: terraform plan
 
       - name: Get config version
+        env:
+          TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
+          TF_API_TEAM_TOKEN: ${{ secrets.TF_API_TEAM_TOKEN }}
+          OAUTH_TOKEN: ${{ secrets.OAUTH_TOKEN }}
+          WORKSPACE_NAME: ${{ needs.get-repo-name.outputs.sanitized_repo_name }}
         run: |
           curl -X GET "https://app.terraform.io/api/v2/workspaces/$workspace_id/configuration-versions" \
             -H "Authorization: Bearer $TF_API_TOKEN" \
