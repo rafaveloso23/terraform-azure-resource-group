@@ -72,7 +72,7 @@ jobs:
 
       - name: Read the value
         env:
-          WORKSPACE_ID: ${{ steps.make_api_request.outputs.workspace_id }}
+          WORKSPACE_ID: ${{ env.workspace_id }}
         run: |
           echo "Workspace ID: $WORKSPACE_ID"
 
