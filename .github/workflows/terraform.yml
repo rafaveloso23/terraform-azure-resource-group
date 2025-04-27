@@ -73,6 +73,8 @@ jobs:
           cli_config_credentials_token: ${{ secrets.TF_API_TEAM_TOKEN }}
 
       - name: Inject Terraform Cloud Backend Configuration
+        env:
+          WORKSPACE_NAME: ${{ needs.get-repo-name.outputs.sanitized_repo_name }}
         run: |
           cat <<EOF > backend.tf
           terraform {
@@ -82,7 +84,7 @@ jobs:
           
               workspaces {
                 project = "modules"
-                name    = ${{ needs.get-repo-name.outputs.sanitized_repo_name }}
+                name    = ${{ env.WORKSPACE_NAME }}
               }
             }
           }
