@@ -120,6 +120,22 @@ jobs:
       - name: Terraform Plan
         run: terraform plan
 
+      - name: Get config version
+        run: |
+            RESPONSE=$(curl -s -X GET "https://app.terraform.io/api/v2/workspaces/$workspace_id/configuration-versions" \
+            -H "Authorization: Bearer $TF_API_TOKEN" \
+            -H "Accept: application/json" \
+            -H "Content-Type: application/vnd.api+json")
+
+            CV_ID=$(echo "$RESPONSE" | jq -r '.data[0].id')
+
+            # Save the configuration version ID to GitHub Actions environment
+            echo "cv_id=$CV_ID" >> "$GITHUB_ENV"
+
+      - name: Read the value
+        run: |
+          echo "CV ID: $CV_ID"
+
       # - name: Create a Run
       #   env:
       #     TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
