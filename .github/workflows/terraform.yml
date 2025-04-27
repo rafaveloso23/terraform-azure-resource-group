@@ -146,7 +146,7 @@ jobs:
           OAUTH_TOKEN: ${{ secrets.OAUTH_TOKEN }}
           WORKSPACE_NAME: ${{ needs.get-repo-name.outputs.sanitized_repo_name }}
         run: |
-          curl -X POST "https://app.terraform.io/api/v2/runs" \
+            curl -X POST "https://app.terraform.io/api/v2/runs" \
             -H "Authorization: Bearer $TF_API_TOKEN" \
             -H "Accept: application/json" \
             -H "Content-Type: application/vnd.api+json" \
@@ -160,13 +160,13 @@ jobs:
                 "workspace": {
                 "data": {
                   "type": "workspaces",
-                  "id": '"$workspace_id"'
+                  "id": "'"$workspace_id"'"
                 }
                 },
                 "configuration-version": {
                 "data": {
                   "type": "configuration-versions",
-                  "id": '"$cv_id"'
+                  "id": "'"$cv_id"'"
                 }
                 }
               }
