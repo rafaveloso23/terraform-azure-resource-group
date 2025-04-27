@@ -28,41 +28,44 @@ jobs:
           OAUTH_TOKEN: ${{ secrets.OAUTH_TOKEN }}
           WORKSPACE_NAME: ${{ needs.get-repo-name.outputs.sanitized_repo_name }}
         run: |
-          curl -X POST "https://app.terraform.io/api/v2/organizations/veloso/workspaces" \
+            RESPONSE=$(curl -s -X POST "https://app.terraform.io/api/v2/organizations/veloso/workspaces" \
             -H "Authorization: Bearer $TF_API_TOKEN" \
             -H "Accept: application/json" \
             -H "Content-Type: application/vnd.api+json" \
             -d '{
               "data": {
-                "type": "workspaces",
-                "attributes": {
-                  "name": "'"$WORKSPACE_NAME"'",  
-                  "terraform_version": "1.6.0",
-                  "queue-all-runs": false,
-                  "auto-apply-run-trigger": false,
-                  "auto-apply": false,
-                  "trigger-patterns": ["./*.tf"],
-                  "file-triggers-enabled": true,                 
-                  "working-directory": ".",
-                  "speculative-enabled": false,
-                  "structured-run-output-enabled": false,
-                  "vcs-repo": {
-                    "identifier": "rafaveloso23/'"$WORKSPACE_NAME"'", 
-                    "oauth-token-id": "ot-wA35FqioPs6EfhUi",
-                    "tags-regex": "",
-                    "branch": "main"
+              "type": "workspaces",
+              "attributes": {
+                "name": "'"$WORKSPACE_NAME"'",  
+                "terraform_version": "1.6.0",
+                "queue-all-runs": false,
+                "auto-apply-run-trigger": false,
+                "auto-apply": false,
+                "trigger-patterns": ["./*.tf"],
+                "file-triggers-enabled": true,                 
+                "working-directory": ".",
+                "speculative-enabled": false,
+                "structured-run-output-enabled": false,
+                "vcs-repo": {
+                "identifier": "rafaveloso23/'"$WORKSPACE_NAME"'", 
+                "oauth-token-id": "ot-wA35FqioPs6EfhUi",
+                "tags-regex": "",
+                "branch": "main"
+                }
+              },
+              "relationships": {
+                "project": {
+                  "data": {
+                    "type": "projects",
+                    "id": "prj-Q9eBYAsfU5yYxbBF"
                   }
-                },
-                "relationships": {
-                    "project": {
-                        "data": {
-                            "type": "projects",
-                            "id": "prj-Q9eBYAsfU5yYxbBF"
-                        }
-                    }
                 }
               }
-            }'
+              }
+            }')
+
+            WORKSPACE_ID=$(echo "$RESPONSE" | jq -r '.data.id')
+            echo "workspace_id=$WORKSPACE_ID" >> "$GITHUB_ENV"
 
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -95,4 +98,39 @@ jobs:
 
       - name: Terraform Plan
         run: terraform plan
+
+      # - name: Make API Request
+      #   env:
+      #     TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
+      #     TF_API_TEAM_TOKEN: ${{ secrets.TF_API_TEAM_TOKEN }}
+      #     OAUTH_TOKEN: ${{ secrets.OAUTH_TOKEN }}
+      #     WORKSPACE_NAME: ${{ needs.get-repo-name.outputs.sanitized_repo_name }}
+      #   run: |
+      #     curl -X POST "https://app.terraform.io/api/v2/organizations/veloso/workspaces" \
+      #       -H "Authorization: Bearer $TF_API_TOKEN" \
+      #       -H "Accept: application/json" \
+      #       -H "Content-Type: application/vnd.api+json" \
+      #       -d '{
+      #         "data": {
+      #         "attributes": {
+      #           "message": "Custom message"
+      #         },
+      #         "type": "runs",
+      #         "relationships": {
+      #           "workspace": {
+      #           "data": {
+      #             "type": "workspaces",
+      #             "id": "ws-LLGHCr4SWy28wyGN"
+      #           }
+      #           },
+      #           "configuration-version": {
+      #           "data": {
+      #             "type": "configuration-versions",
+      #             "id": "cv-n4XQPBa2QnecZJ4G"
+      #           }
+      #           }
+      #         }
+      #         }
+      #       }'
+
 
