@@ -145,7 +145,7 @@ jobs:
           TF_API_TEAM_TOKEN: ${{ secrets.TF_API_TEAM_TOKEN }}
           WORKSPACE_NAME: ${{ needs.get-repo-name.outputs.sanitized_repo_name }}
         run: |
-            RESPONSE=$(curl -s -X POST "https://app.terraform.io/api/v2/runs" \
+          curl -s -X POST "https://app.terraform.io/api/v2/runs" \
             -H "Authorization: Bearer $TF_API_TEAM_TOKEN" \
             -H "Accept: application/json" \
             -H "Content-Type: application/vnd.api+json" \
@@ -170,13 +170,11 @@ jobs:
                 }
               }
               }
-            }')
-            RUN_ID=$(echo "$RESPONSE" | jq -r '.data.id')
-            echo "run_id=$RUN_ID" >> "$GITHUB_ENV"
+            }'
 
-      - name: Read the value
-        run: |
-          echo "Run ID: $run_id"
+      # - name: Read the value
+      #   run: |
+      #     echo "Run ID: $run_id"
       
       # - name: Terraform Apply
       #   env:
