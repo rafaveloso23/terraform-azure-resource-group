@@ -82,7 +82,7 @@ jobs:
           
               workspaces {
                 project = "modules"
-                name    = "terraform-azure-resource-group"
+                name    = ${{ env.WORKSPACE_NAME }}
               }
             }
           }
@@ -94,5 +94,3 @@ jobs:
       - name: Terraform Plan
         run: terraform plan
 
-      - name: Terraform Aply
-        run: terraform apply -auto-approve
