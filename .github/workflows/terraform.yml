@@ -137,7 +137,7 @@ jobs:
 
       - name: Read the value
         run: |
-          echo "CV ID: $CV_ID"
+          echo "CV ID: $cv_id"
 
       # - name: Create a Run
       #   env:
