@@ -30,45 +30,59 @@ jobs:
           OAUTH_TOKEN: ${{ secrets.OAUTH_TOKEN }}
           WORKSPACE_NAME: ${{ needs.get-repo-name.outputs.sanitized_repo_name }}
         run: |
-            RESPONSE=$(curl -s -X POST "https://app.terraform.io/api/v2/organizations/veloso/workspaces" \
+          GET_RESPONSE=$(curl -s -o get_response.json -w "%{http_code}" -X GET "https://app.terraform.io/api/v2/organizations/veloso/workspaces/$WORKSPACE_NAME" \
             -H "Authorization: Bearer $TF_API_TOKEN" \
             -H "Accept: application/json" \
-            -H "Content-Type: application/vnd.api+json" \
-            -d '{
-              "data": {
-              "type": "workspaces",
-              "attributes": {
-                "name": "'"$WORKSPACE_NAME"'",  
-                "terraform_version": "1.6.0",
-                "queue-all-runs": false,
-                "auto-apply-run-trigger": false,
-                "auto-apply": false,
-                "trigger-patterns": ["./*.tf"],
-                "file-triggers-enabled": true,                 
-                "working-directory": ".",
-                "speculative-enabled": false,
-                "structured-run-output-enabled": false,
-                "vcs-repo": {
-                "identifier": "rafaveloso23/'"$WORKSPACE_NAME"'", 
-                "oauth-token-id": "ot-wA35FqioPs6EfhUi",
-                "tags-regex": "",
-                "branch": "main"
-                }
-              },
-              "relationships": {
-                "project": {
-                  "data": {
-                    "type": "projects",
-                    "id": "prj-Q9eBYAsfU5yYxbBF"
+            -H "Content-Type: application/vnd.api+json")
+
+          if [ "$GET_RESPONSE" -eq 200 ]; then
+            echo "Workspace already exists."
+            WORKSPACE_ID=$(jq -r '.data.id' get_response.json)
+          else
+            echo "Workspace does not exist. Creating it now..."
+
+            CREATE_RESPONSE=$(curl -s -X POST "https://app.terraform.io/api/v2/organizations/veloso/workspaces" \
+              -H "Authorization: Bearer $TF_API_TOKEN" \
+              -H "Accept: application/json" \
+              -H "Content-Type: application/vnd.api+json" \
+              -d '{
+                "data": {
+                  "type": "workspaces",
+                  "attributes": {
+                    "name": "'"$WORKSPACE_NAME"'",
+                    "terraform_version": "1.6.0",
+                    "queue-all-runs": false,
+                    "auto-apply-run-trigger": false,
+                    "auto-apply": false,
+                    "trigger-patterns": ["./*.tf"],
+                    "file-triggers-enabled": true,
+                    "working-directory": ".",
+                    "speculative-enabled": false,
+                    "structured-run-output-enabled": false,
+                    "vcs-repo": {
+                      "identifier": "rafaveloso23/'"$WORKSPACE_NAME"'",
+                      "oauth-token-id": "ot-wA35FqioPs6EfhUi",
+                      "tags-regex": "",
+                      "branch": "main"
+                    }
+                  },
+                  "relationships": {
+                    "project": {
+                      "data": {
+                        "type": "projects",
+                        "id": "prj-Q9eBYAsfU5yYxbBF"
+                      }
+                    }
                   }
                 }
-              }
-              }
-            }')
+              }')
 
-            WORKSPACE_ID=$(echo "$RESPONSE" | jq -r '.data.id')
-            echo "workspace_id=$WORKSPACE_ID" >> "$GITHUB_ENV"
-            echo "workspace_id=$WORKSPACE_ID" >> "$GITHUB_OUTPUT"
+            WORKSPACE_ID=$(echo "$CREATE_RESPONSE" | jq -r '.data.id')
+          fi
+
+          # Save the workspace_id to GitHub Actions environment
+          echo "workspace_id=$WORKSPACE_ID" >> "$GITHUB_ENV"
+
 
       - name: Read the value
         run: |
