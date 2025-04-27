@@ -67,6 +67,10 @@ jobs:
             WORKSPACE_ID=$(echo "$RESPONSE" | jq -r '.data.id')
             echo "workspace_id=$WORKSPACE_ID" >> "$GITHUB_ENV"
 
+      - name: Read the value
+        run: |
+          echo "Workspace ID: $WORKSPACE_ID"
+
       - name: Checkout Repository
         uses: actions/checkout@v4
 
