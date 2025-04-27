@@ -82,7 +82,7 @@ jobs:
           
               workspaces {
                 project = "modules"
-                name    = '"$WORKSPACE_NAME"'
+                name    = ${{ needs.get-repo-name.outputs.sanitized_repo_name }}
               }
             }
           }
