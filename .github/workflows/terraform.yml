@@ -153,7 +153,7 @@ jobs:
             -d '{
               "data": {
               "attributes": {
-                "message": "Ainnnnnnn Painho Paraaa"
+                "message": "Custom message for the run",
               },
               "type": "runs",
               "relationships": {
@@ -186,10 +186,9 @@ jobs:
           OAUTH_TOKEN: ${{ secrets.OAUTH_TOKEN }}
           WORKSPACE_NAME: ${{ needs.get-repo-name.outputs.sanitized_repo_name }}
         run: |
-            RESPONSE=$(curl -s -X POST "https://app.terraform.io/api/v2/runs/$run_id/actions/apply" \
+          curl -X POST "https://app.terraform.io/api/v2/runs/$run_id/actions/apply" \
             -H "Authorization: Bearer $TF_API_TEAM_TOKEN" \
             -H "Accept: application/json" \
-            -H "Content-Type: application/vnd.api+json")
-            echo "Apply response: $RESPONSE"
+            -H "Content-Type: application/vnd.api+json"
 
 
