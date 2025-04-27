@@ -139,39 +139,50 @@ jobs:
         run: |
           echo "CV ID: $cv_id"
 
-      - name: Create a Run
+      - name: Create a config version
         env:
           TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
           TF_API_TEAM_TOKEN: ${{ secrets.TF_API_TEAM_TOKEN }}
           WORKSPACE_NAME: ${{ needs.get-repo-name.outputs.sanitized_repo_name }}
         run: |
-          curl -s -X POST "https://app.terraform.io/api/v2/runs" \
+          curl -s -X GET "https://app.terraform.io/api/v2/configuration-versions/$cv_id/ingress-attributes" \
             -H "Authorization: Bearer $TF_API_TEAM_TOKEN" \
             -H "Accept: application/json" \
-            -H "Content-Type: application/vnd.api+json" \
-            -d '{
-              "data": {
-              "attributes": {
-                "message": "Custom message for the run",
-                "plan-only": false
-              },
-              "type": "runs",
-              "relationships": {
-                "workspace": {
-                "data": {
-                  "type": "workspaces",
-                  "id": "'"$workspace_id"'"
-                }
-                },
-                "configuration-version": {
-                "data": {
-                  "type": "configuration-versions",
-                  "id": "'"$cv_id"'"
-                }
-                }
-              }
-              }
-            }'
+            -H "Content-Type: application/vnd.api+json"
+            
+      # - name: Create a Run
+      #   env:
+      #     TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
+      #     TF_API_TEAM_TOKEN: ${{ secrets.TF_API_TEAM_TOKEN }}
+      #     WORKSPACE_NAME: ${{ needs.get-repo-name.outputs.sanitized_repo_name }}
+      #   run: |
+      #     curl -s -X POST "https://app.terraform.io/api/v2/runs" \
+      #       -H "Authorization: Bearer $TF_API_TEAM_TOKEN" \
+      #       -H "Accept: application/json" \
+      #       -H "Content-Type: application/vnd.api+json" \
+      #       -d '{
+      #         "data": {
+      #         "attributes": {
+      #           "message": "Custom message for the run",
+      #           "plan-only": false
+      #         },
+      #         "type": "runs",
+      #         "relationships": {
+      #           "workspace": {
+      #           "data": {
+      #             "type": "workspaces",
+      #             "id": "'"$workspace_id"'"
+      #           }
+      #           },
+      #           "configuration-version": {
+      #           "data": {
+      #             "type": "configuration-versions",
+      #             "id": "'"$cv_id"'"
+      #           }
+      #           }
+      #         }
+      #         }
+      #       }'
 
       # - name: Read the value
       #   run: |
