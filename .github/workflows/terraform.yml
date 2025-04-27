@@ -82,7 +82,7 @@ jobs:
           
               workspaces {
                 project = "modules"
-                name    = ${{ env.WORKSPACE_NAME }}
+                name    = '"$WORKSPACE_NAME"'
               }
             }
           }
