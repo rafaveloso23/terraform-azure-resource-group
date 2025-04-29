@@ -60,6 +60,7 @@ jobs:
                     "structured-run-output-enabled": false,
                     "vcs-repo": {
                       "identifier": "rafaveloso23/'"$WORKSPACE_NAME"'",
+                      "ingress-submodules": true,
                       "oauth-token-id": "ot-wA35FqioPs6EfhUi",
                       "tags-regex": "",
                       "branch": "main"
