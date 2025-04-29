@@ -53,6 +53,7 @@ jobs:
                     "terraform_version": "1.6.0",
                     "queue-all-runs": true,
                     "auto-apply-run-trigger": false,
+                    "file-triggers-enabled": false,
                     "auto-apply": false,
                     "working-directory": "",
                     "speculative-enabled": true,
