@@ -54,8 +54,6 @@ jobs:
                     "queue-all-runs": true,
                     "auto-apply-run-trigger": false,
                     "auto-apply": false,
-                    #"trigger-patterns": ["./*.tf"],
-                    #"file-triggers-enabled": true,
                     "working-directory": ".",
                     "speculative-enabled": true,
                     "structured-run-output-enabled": false,
