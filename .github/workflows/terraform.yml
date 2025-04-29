@@ -51,7 +51,7 @@ jobs:
                   "attributes": {
                     "name": "'"$WORKSPACE_NAME"'",
                     "terraform_version": "1.6.0",
-                    "queue-all-runs": false,
+                    "queue-all-runs": true,
                     "auto-apply-run-trigger": false,
                     "auto-apply": false,
                     "trigger-patterns": ["./*.tf"],
