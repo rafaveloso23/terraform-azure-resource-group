@@ -51,13 +51,13 @@ jobs:
                   "attributes": {
                     "name": "'"$WORKSPACE_NAME"'",
                     "terraform_version": "1.6.0",
-                    "queue-all-runs": true,
+                    "queue-all-runs": false,
                     "auto-apply-run-trigger": false,
                     "auto-apply": false,
                     "trigger-patterns": ["./*.tf"],
                     "file-triggers-enabled": true,
                     "working-directory": ".",
-                    "speculative-enabled": false,
+                    "speculative-enabled": true,
                     "structured-run-output-enabled": false,
                     "vcs-repo": {
                       "identifier": "rafaveloso23/'"$WORKSPACE_NAME"'",
