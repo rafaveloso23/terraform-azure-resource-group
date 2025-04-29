@@ -54,7 +54,7 @@ jobs:
                     "queue-all-runs": true,
                     "auto-apply-run-trigger": false,
                     "auto-apply": false,
-                    "working-directory": ".",
+                    "working-directory": "",
                     "speculative-enabled": true,
                     "structured-run-output-enabled": false,
                     "vcs-repo": {
