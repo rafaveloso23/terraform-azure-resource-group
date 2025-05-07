@@ -9,7 +9,7 @@ variable "location" {
 }
 
 variable "client_secret" {
-  type    = string
+  type = string
 }
 
 variable "tags" {
