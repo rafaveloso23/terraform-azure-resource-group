@@ -26,9 +26,8 @@ jobs:
         with:
           directory: .
           framework: terraform
-          skip_path: |
-            *.tfvars
-            *.json
+          output_format: cli
+          skip_path: terraform.tfvars,providers.tf
 
 
 
