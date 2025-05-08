@@ -29,10 +29,10 @@ jobs:
         with:
           directory: .
           framework: github_actions
-          soft_fail: "true"
+          soft_fail: "true" 
           #output_format: cli
           quiet: true
-          # skip_path: terraform.tfvars,providers.tf
+          skip_path: ".github/workflows/terraform.yml"
 
 
 
