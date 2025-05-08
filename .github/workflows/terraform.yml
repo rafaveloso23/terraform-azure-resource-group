@@ -29,8 +29,8 @@ jobs:
         with:
           directory: .
           framework: github_actions
-          output_format: cli
-          #quiet: true
+          #output_format: cli
+          quiet: true
           # skip_path: terraform.tfvars,providers.tf
 
 
