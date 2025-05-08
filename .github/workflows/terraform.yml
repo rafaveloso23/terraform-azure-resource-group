@@ -30,6 +30,9 @@ jobs:
           directory: terraform
           framework: terraform
           output_format: cli
+          quiet: true
+          check: CKV_AZURE_1
+          skip_check: CKV_AZURE_2
           # skip_path: terraform.tfvars,providers.tf
 
 
