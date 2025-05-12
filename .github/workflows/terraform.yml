@@ -16,23 +16,17 @@ jobs:
           REPO_NAME="${GITHUB_REPOSITORY#*/}"
           SANITIZED_NAME=$(echo "$REPO_NAME" | tr '.' '-')
           echo "sanitized_repo_name=$SANITIZED_NAME" >> "$GITHUB_OUTPUT"
-      # - uses: actions/checkout@v2
-      # - name: Set up Python 3.8
-        # uses: actions/setup-python@v4
-        # with:
-        #   python-version: 3.8
-      
-      - uses: actions/checkout@v2
-
+     
+      - uses: actions/checkout@v4
       - name: Test with Checkov
         uses: bridgecrewio/checkov-action@v12
         with:
           directory: .
-          framework: github_actions
+          framework: terraform
           soft_fail: "true" 
-          #output_format: cli
+          output_format: cli
           quiet: true
-          skip_path: ".github/workflows/terraform.yml"
+          skip_framework: github_actions
 
 
 

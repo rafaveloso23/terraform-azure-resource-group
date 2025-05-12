@@ -3,7 +3,7 @@ terraform {
     azurerm = {
       source                = "hashicorp/azurerm"
       version               = "~> 3.0"
-      configuration_aliases = [azurerm, azurerm.teste]
+      configuration_aliases = [azurerm]
     }
   }
 }
